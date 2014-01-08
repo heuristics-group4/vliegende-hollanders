@@ -170,7 +170,7 @@ public class MokumFrame extends JFrame {
 	public static void main(String[] args) {
 		City.initialiseCities();
 		
-		new MokumFrame();
+		new MokumFrame(); //Hier start de magie.
 	}
 	
 	public void redraw(int delay){
