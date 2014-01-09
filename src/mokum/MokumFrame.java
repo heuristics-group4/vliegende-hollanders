@@ -171,7 +171,7 @@ public class MokumFrame extends JFrame {
 		City.initialiseCities();
 		
 		new MokumFrame(); //Hier start de magie. 
-		//Even een voorbeeltje
+		//Even een voorbeeldje (voorbeeld is met een "D" :P )
 	}
 	
 	public void redraw(int delay){
