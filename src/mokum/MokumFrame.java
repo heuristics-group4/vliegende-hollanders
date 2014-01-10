@@ -164,7 +164,7 @@ public class MokumFrame extends JFrame {
 	// random methode die nu gebruikt wordt
 	public Dienstregeling maakDienstregeling() {
 		//Dienstregeling d = new Dienstregeling(true);
-		Dienstregeling d = Optimizer.Optimize(1,1,0.25);
+		Dienstregeling d = Optimizer.Optimize(10000,1,0.25);
 		return d;
 	}
 

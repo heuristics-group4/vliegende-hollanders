@@ -181,8 +181,8 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
     
     // Vergelijkt de dienstregeling met een andere dienstregeling object aan de hand van pasagierskilometers
     public int compareTo(Dienstregeling other_dienstregeling){
-    	Integer kilometers1 = telPassagiersKilometers();
-    	Integer kilometers2 = other_dienstregeling.telPassagiersKilometers();
+    	Integer kilometers2 = telPassagiersKilometers();
+    	Integer kilometers1 = other_dienstregeling.telPassagiersKilometers();
     	return kilometers1.compareTo(kilometers2);
     }
 }
