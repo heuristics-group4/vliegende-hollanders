@@ -6,7 +6,7 @@ public class Optimizer {
 	private Dienstregeling[] population;
 	private int current_population_size;
 	
-	public Dienstregeling Optimize(int population_size, int max_iterations, double survive_ratio){ //aanroepen als bijv Optimize(100,100,0.25)
+	public Dienstregeling Optimize(int population_size, int max_iterations, double survive_ratio){	//aanroepen als bijv Optimize(100,100,0.25)
 		population = new Dienstregeling[population_size]; 	// maak een array van dienstregelingen aan
 		current_population_size = 0;
 				
@@ -15,12 +15,10 @@ public class Optimizer {
 			for(int j=current_population_size; j<population_size; j++){	
 				population[i] = new Dienstregeling(true);
 			}
-			//sorteer population
 			
-			
-			//kill (1-survive_ratio)*population	
-			
-			
+			Arrays.sort(population); //sorteer population
+						
+			current_population_size = (int) Math.ceil(population_size * survive_ratio); //ZOMBIE APOCALYPSE!!! Laat enkel de survivors over
 			
 		}
 		return population[0];
