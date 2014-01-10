@@ -9,7 +9,7 @@ package mokum;
 	Het bevat algemene informatie van het probleem en het beheert de vloot van
 	Mokum Airlines
 */
-public class Dienstregeling implements Comparable<Dienstrgeling>{
+public class Dienstregeling implements Comparable<Dienstregeling>{
 	
 	//Het geschatte aantal passagiers dat van rij Y naar kolom X wil vliegen (gaat op index)
 	private static int[][] PASSENGERS = {
