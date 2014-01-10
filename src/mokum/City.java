@@ -119,6 +119,7 @@ public class City {
 		CITIES.add(new City(380,195,"Tallinn"));
 		CITIES.add(new City(320,385,"Vienna"));
 		CITIES.add(new City(350,315,"Warsaw"));
+		//leuke steden hoor
 	}
 	
 }
