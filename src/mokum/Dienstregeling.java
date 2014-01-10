@@ -9,7 +9,7 @@ package mokum;
 	Het bevat algemene informatie van het probleem en het beheert de vloot van
 	Mokum Airlines
 */
-public class Dienstregeling {
+public class Dienstregeling implements Comparable<Dienstrgeling>{
 	
 	//Het geschatte aantal passagiers dat van rij Y naar kolom X wil vliegen (gaat op index)
 	private static int[][] PASSENGERS = {
@@ -48,7 +48,7 @@ public class Dienstregeling {
 	
 	
 	private static final	int 			MINUTEN_PER_DAG		= 1200; 	//Het aantal minuten waartussen gevlogen kan worden (20*60)
-	private static final	int			VLOOTGROOTTE			= 6;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
+	private static final	int			VLOOTGROOTTE			= 1;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
 	private					Vliegtuig[]	dienstRegeling;					//De verzameling vliegtuigen van Mokum Airlines
 	
 	//constructors
@@ -178,6 +178,9 @@ public class Dienstregeling {
 		System.arraycopy(source[i],0,destination[i],0,source[i].length);
 		}
 	}
-
-
+    
+    // Vergelijkt de dienstregeling met een andere dienstregeling object aan de hand van pasagierskilometers
+    //public int compareTo(Dienstregeling other_dienstregeling){
+    //	return telPassagiersKilometers().compareTo(other_dienstregeling.telPassagiersKilometers());
+    //}
 }
