@@ -46,7 +46,13 @@ public class Landing {
 		this.hierTanken		= false;
 		this.verwerktijd 	= bepaalVerwerktijd();
 	}
-	
+
+	public Landing(Landing other) {
+		this.locatie 		= other.locatie;
+		this.grondtijd		= other.grondtijd;
+		this.hierTanken		= other.hierTanken;
+		this.verwerktijd 	= other.verwerktijd;
+	}
 	/* ********************************************************************** *\
 	|= ============================== Methoden ============================== =|
 	\* ********************************************************************** */

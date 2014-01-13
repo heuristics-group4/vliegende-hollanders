@@ -45,6 +45,14 @@ public class Vliegtuig {
 	public Vliegtuig(int duur) {
 		maakRandomRoute(duur);
 	}
+	
+	public Vliegtuig(Vliegtuig other) {
+		this.aantalLandingen = other.aantalLandingen;
+		this.route = new Landing[MAX_ROUTE_LENGTE];
+		for(int i=0; i<aantalLandingen; i++){
+			route[i] = new Landing(other.route[i]);
+		}
+	}
 
 	/* Methoden */
 	// Geeft het aantal landingen in de huidige route van het vliegtuig
@@ -98,10 +106,10 @@ public class Vliegtuig {
 			for (int i = 1; i < aantalLandingen; i++) {
 				int afstand = geefLanding(i - 1).geefAfstandNaar(
 						geefLanding(i).geefLoc());
-				if (afstand > MAX_BEREIK) {
-					System.out
-							.println("Een vliegtuig vliegt naar een bestemming die buiten zijn bereik ligt");
-				}
+				//if (afstand > MAX_BEREIK) {
+				//	System.out
+				//			.println("Een vliegtuig vliegt naar een bestemming die buiten zijn bereik ligt");
+				//}
 				if (afstand > bereik) {
 					geefLanding(i - 1).wijzigTankbeurt(true);
 					bereik = MAX_BEREIK - afstand;

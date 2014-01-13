@@ -1,5 +1,7 @@
 package mokum;
 
+import java.util.Random;
+
 //v1.3: No changes
 //v1.2: Maak verterkarray: 
 //	old	for(int i=1; i<dienstRegeling.length -1; i++) {
@@ -50,6 +52,7 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 	private static final	int 			MINUTEN_PER_DAG		= 1200; 	//Het aantal minuten waartussen gevlogen kan worden (20*60)
 	private static final	int			VLOOTGROOTTE			= 1;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
 	private					Vliegtuig[]	dienstRegeling;					//De verzameling vliegtuigen van Mokum Airlines
+	private Random	RANDOM = new Random(); //Nodig voor het genereren van random getallen
 	
 	//constructors
 	public Dienstregeling() {
@@ -61,7 +64,18 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		maakRandomDienstregeling();
 	}
 	
+	public Dienstregeling(Dienstregeling other) {
+		this.dienstRegeling = new Vliegtuig[VLOOTGROOTTE];
+		for(int i=0; i<VLOOTGROOTTE; i++){
+			dienstRegeling[i] = new Vliegtuig(other.dienstRegeling[i]);
+		}
+	}
+	
 	/* METHODEN */
+	
+	public Vliegtuig[] geefDienstregeling(){
+		return dienstRegeling;
+	}
 	
 	//Geeft het vliegtuig op index
 	public Vliegtuig geefVliegtuig(int index) {
@@ -75,6 +89,12 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 	//Geeft de grootte van de vloot
 	public int geefGrootte() {
 		return VLOOTGROOTTE;
+	}
+	
+	public void wijzigRandomLandingVanRandomVliegtuig(){
+		int random_vlucht = RANDOM.nextInt(VLOOTGROOTTE);
+		int random_landing = RANDOM.nextInt(dienstRegeling[random_vlucht].geefAantalLandingen());
+		dienstRegeling[random_vlucht].wijzigLanding(random_landing,City.CITIES.get(RANDOM.nextInt(City.CITIES.size())));
 	}
 	
 	//Maakt een volledig random dienstregeling
