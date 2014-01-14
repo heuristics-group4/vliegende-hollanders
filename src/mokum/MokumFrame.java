@@ -32,7 +32,7 @@ public class MokumFrame extends JFrame {
 	private JLabel mouseposition;
 
 	public MokumFrame() {
-		setTitle("Heuristieken 2014 - Mokum Airlines!");
+		setTitle("Heuristieken 2014 - Mokum Airlines! - Group 4 \"De Vliegende Hollanders\"");
 		setLayout(new BorderLayout());
 		setSize(1024, 768);
 
