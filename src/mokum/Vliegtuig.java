@@ -202,7 +202,7 @@ public class Vliegtuig {
 		aantalLandingen = 1;
 		for(int i=0;i<MAX_ROUTE_LENGTE;i++){
 			Landing temp = new Landing();
-			//System.out.println(geefRouteDuur() + " " + checkDuurToename(temp));
+			System.out.println(geefRouteDuur() + " " + checkDuurToename(temp,afgelegdeAfstand));
 			if(geefRouteDuur() + checkDuurToename(temp,afgelegdeAfstand) < duur){
 				route[aantalLandingen] = temp;
 				afgelegdeAfstand += temp.geefAfstandNaar(route[aantalLandingen-1].geefLoc());
