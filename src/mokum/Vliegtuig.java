@@ -141,7 +141,7 @@ public class Vliegtuig {
 	}
 
 	// Geeft de duur van de route
-	public int geefRouteDuur() {
+	/*public int geefRouteDuur() {
 		double routeTijd = 0;
 		if (aantalLandingen == 0) {
 			return 0;
@@ -160,6 +160,15 @@ public class Vliegtuig {
 		routeTijd -= route[aantalLandingen - 1].geefTotaleGrondtijd();
 		if (routeTijd < 0) {
 			return 0;
+		}
+		return (int) routeTijd;
+	}*/
+	public int geefRouteDuur(){
+		double routeTijd = 0;
+		for (int i=0; i<aantalLandingen-1; i++){
+			Landing landing = route[i];
+			double afstand = landing.geefAfstandNaar(route[i+1].geefLoc());
+			routeTijd += afstand/VLIEGTUIG_SNELHEID * 60 + landing.geefTotaleGrondtijd();
 		}
 		return (int) routeTijd;
 	}
@@ -200,18 +209,19 @@ public class Vliegtuig {
 		Landing beginpunt = new Landing();
 		route[0] = beginpunt;
 		aantalLandingen = 1;
-		for(int i=0;i<MAX_ROUTE_LENGTE;i++){
+		for(int i=0;i<MAX_ROUTE_LENGTE;i++){ //voert dit dus 20x uit, misschien moeten we dit vervangen door een betere methode
 			Landing temp = new Landing();
 			System.out.println(geefRouteDuur() + " " + checkDuurToename(temp,afgelegdeAfstand));
-			if(geefRouteDuur() + checkDuurToename(temp,afgelegdeAfstand) < duur){
+			if(geefRouteDuur() + checkDuurToename(temp,afgelegdeAfstand) < duur){ //check of er plek is om de landing temp toe te voegen
 				route[aantalLandingen] = temp;
 				afgelegdeAfstand += temp.geefAfstandNaar(route[aantalLandingen-1].geefLoc());
 				aantalLandingen++;
 			}
 		}
 		if(!langsThuishavenGeweest()){
-			route[RANDOM.nextInt(aantalLandingen)] = new Landing(City.CITIES.get(0));
+			route[RANDOM.nextInt(aantalLandingen)] = new Landing(City.CITIES.get(0)); //verander een van de landingen in Amsterdam
 		}
+		//bug------->door het aanpassen van een landing in amsterdam kan de lengte nu te lang zijn geworden
 		route[aantalLandingen] = route[0];
 		aantalLandingen++;
 		planTankbeurten();
@@ -220,6 +230,7 @@ public class Vliegtuig {
 	private double checkDuurToename(Landing landing,double afgelegdeAfstand){
 		double afstandsToename = landing.geefAfstandNaar(route[aantalLandingen-1].geefLoc()) + landing.geefAfstandNaar(route[0].geefLoc()); //de afstand van de vorige landing naar deze, en van deze naar eindbestemming
 		double duur = afstandsToename / VLIEGTUIG_SNELHEID * 60 + 2*60 + Math.floor((afgelegdeAfstand + afstandsToename)/MAX_BEREIK) * 60; //vliegtijd + aantal landingen + aantal tankbeurten
+		//bug------->aantal tankbeurten klopt niet, want je kan enkel tanken tijdens een stop.
 		return duur;
 	}
 
