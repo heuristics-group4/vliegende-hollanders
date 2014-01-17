@@ -221,16 +221,16 @@ public class Vliegtuig {
 		if(!langsThuishavenGeweest()){
 			route[RANDOM.nextInt(aantalLandingen)] = new Landing(City.CITIES.get(0)); //verander een van de landingen in Amsterdam
 		}
-		//bug------->door het aanpassen van een landing in amsterdam kan de lengte nu te lang zijn geworden
+		//door het aanpassen van een landing in amsterdam kan de lengte nu te lang zijn geworden
 		route[aantalLandingen] = route[0];
 		aantalLandingen++;
 		planTankbeurten();
 	}
 	
 	private double checkDuurToename(Landing landing,double afgelegdeAfstand){
+		//is niet exact, wordt enkel als schatting tijdens het creeeren van initiele random routes
 		double afstandsToename = landing.geefAfstandNaar(route[aantalLandingen-1].geefLoc()) + landing.geefAfstandNaar(route[0].geefLoc()); //de afstand van de vorige landing naar deze, en van deze naar eindbestemming
-		double duur = afstandsToename / VLIEGTUIG_SNELHEID * 60 + 2*60 + Math.floor((afgelegdeAfstand + afstandsToename)/MAX_BEREIK) * 60; //vliegtijd + aantal landingen + aantal tankbeurten
-		//bug------->aantal tankbeurten klopt niet, want je kan enkel tanken tijdens een stop.
+		double duur = afstandsToename / (VLIEGTUIG_SNELHEID * 60) + 60 + Math.floor((afgelegdeAfstand + afstandsToename)/MAX_BEREIK) * 60; //vliegtijd + aantal landingen + aantal tankbeurten
 		return duur;
 	}
 
