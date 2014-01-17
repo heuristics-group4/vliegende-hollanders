@@ -122,6 +122,12 @@ public class Vliegtuig {
 			}
 		}
 	}
+	
+	public void resetTankbeurten(){
+		for(int i=0; i<aantalLandingen;i++){
+			geefLanding(i).wijzigTankbeurt(false);
+		}
+	}
 
 	// Retouneert de verzameling landingen van dit vliegtuig vanaf beginIndex
 	// met lengte
@@ -141,7 +147,7 @@ public class Vliegtuig {
 	}
 
 	// Geeft de duur van de route
-	/*public int geefRouteDuur() {
+	public int geefRouteDuur() {
 		double routeTijd = 0;
 		if (aantalLandingen == 0) {
 			return 0;
@@ -162,8 +168,8 @@ public class Vliegtuig {
 			return 0;
 		}
 		return (int) routeTijd;
-	}*/
-	public int geefRouteDuur(){
+	}
+	/*public int geefRouteDuur(){
 		double routeTijd = 0;
 		for (int i=0; i<aantalLandingen-1; i++){
 			Landing landing = route[i];
@@ -171,7 +177,7 @@ public class Vliegtuig {
 			routeTijd += afstand/VLIEGTUIG_SNELHEID * 60 + landing.geefTotaleGrondtijd();
 		}
 		return (int) routeTijd;
-	}
+	}*/
 
 	// Voegt toeTeVoegen achteraan toe aan de huidige route als dit mogelijk is
 	public boolean voegRouteToe(Landing[] toeTeVoegen) {
@@ -211,21 +217,36 @@ public class Vliegtuig {
 		aantalLandingen = 1;
 		for(int i=0;i<MAX_ROUTE_LENGTE;i++){ //voert dit dus 20x uit, misschien moeten we dit vervangen door een betere methode
 			Landing temp = new Landing();
-			System.out.println(geefRouteDuur() + " " + checkDuurToename(temp,afgelegdeAfstand));
 			if(geefRouteDuur() + checkDuurToename(temp,afgelegdeAfstand) < duur){ //check of er plek is om de landing temp toe te voegen
 				route[aantalLandingen] = temp;
 				afgelegdeAfstand += temp.geefAfstandNaar(route[aantalLandingen-1].geefLoc());
 				aantalLandingen++;
 			}
 		}
+		System.out.println(geefRouteDuur());
 		if(!langsThuishavenGeweest()){
 			route[RANDOM.nextInt(aantalLandingen)] = new Landing(City.CITIES.get(0)); //verander een van de landingen in Amsterdam
 		}
 		//door het aanpassen van een landing in amsterdam kan de lengte nu te lang zijn geworden
-		route[aantalLandingen] = route[0];
+		route[aantalLandingen] = route[0]; //eindlocatie inplannen
 		aantalLandingen++;
 		planTankbeurten();
+		ingekort();
 	}
+	
+	public void ingekort(){
+		while(geefRouteDuur() > 1200){
+			if(route[aantalLandingen-2].geefLocatie() != City.CITIES.get(0)){
+				route[aantalLandingen-2] = route[aantalLandingen-1];
+				aantalLandingen--;
+			} else {
+				route[aantalLandingen-3] = route[aantalLandingen-2];
+				route[aantalLandingen-2] = route[aantalLandingen-1];
+				aantalLandingen--;
+			}
+		}		
+	}
+
 	
 	private double checkDuurToename(Landing landing,double afgelegdeAfstand){
 		//is niet exact, wordt enkel als schatting tijdens het creeeren van initiele random routes
