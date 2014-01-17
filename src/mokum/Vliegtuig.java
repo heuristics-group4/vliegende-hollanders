@@ -209,6 +209,7 @@ public class Vliegtuig {
 		planTankbeurten();
 	}
 	*/
+	
 	public void maakRandomRoute(int duur){
 		double afgelegdeAfstand = 0;
 		route = new Landing[MAX_ROUTE_LENGTE];
