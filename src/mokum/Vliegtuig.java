@@ -97,6 +97,20 @@ public class Vliegtuig {
 		}
 		return false;
 	}
+	
+	public int aantalKeerThuishavenInRoute() {
+		int resultaat = 0;
+		for (int i = 0; i < aantalLandingen-1; i++) { //tel laatste niet mee
+			if (geefLanding(i).geefLocatieNaam().equalsIgnoreCase(THUISHAVEN)) {
+				resultaat++;
+			}
+		}
+		return resultaat;
+	}
+	
+	public static String geefThuishaven() {
+		return THUISHAVEN;
+	}
 
 	// Plant de tankbeurten dusdanig dat het vliegtuig pas tankt als het in de
 	// lucht droog komt te staan wanneer dit niet gebeurt. !! GAAT ER VAN UIT
@@ -237,7 +251,7 @@ public class Vliegtuig {
 	
 	public void ingekort(){
 		while(geefRouteDuur() > 1200){
-			if(route[aantalLandingen-2].geefLocatie() != City.CITIES.get(0)){
+			if(route[aantalLandingen-2].geefLocatieNaam() != Vliegtuig.geefThuishaven()){
 				route[aantalLandingen-2] = route[aantalLandingen-1];
 				aantalLandingen--;
 			} else {
@@ -245,7 +259,8 @@ public class Vliegtuig {
 				route[aantalLandingen-2] = route[aantalLandingen-1];
 				aantalLandingen--;
 			}
-		}		
+		}
+		
 	}
 
 	
