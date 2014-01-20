@@ -262,18 +262,23 @@ public class Vliegtuig {
 		}
 	}
 	
-	public Landing[] geefMogelijkeBestemmingen(Landing locatie, int maxAfstand) {
+	//
+	public Landing[] geefMogelijkeBestemmingen(Landing locatie, int duur, boolean minimaleDuur) {
 		Landing[] resultaat = new Landing[City.CITIES.size()];
 		int locatieIndex = locatie.geefLoc();
 		int aantalElementen = 0;
 		
 		for (int i = 0; i<City.CITIES.size(); i++) {
-			if (locatieIndex != i && locatie.geefAfstandNaar(i) <= maxAfstand) {
+			if (minimaleDuur && locatieIndex != i && locatie.geefVliegduurNaar(i, VLIEGTUIG_SNELHEID) <= duur) {
+				resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
+				aantalElementen++;
+			} else if (!minimaleDuur && locatieIndex != i && locatie.geefVliegduurNaar(i, VLIEGTUIG_SNELHEID) >= duur) {
 				resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
 				aantalElementen++;
 			}
 		}
 		return resultaat;
+		//zou kunnen dat dit een conflict veroorzaakt met de tankbeurten.
 	}
 
 	
