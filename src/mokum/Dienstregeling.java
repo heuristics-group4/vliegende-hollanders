@@ -110,8 +110,13 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		
 		City nieuweStad = City.CITIES.get(RANDOM.nextInt(City.CITIES.size()));
 		
-		
 		gekozenVlucht.wijzigLanding(random_landing,nieuweStad);
+		
+		gekozenVlucht.planTankbeurten();
+		gekozenVlucht.ingekort();
+		gekozenVlucht.voegPassendeLandingToe();
+		gekozenVlucht.resetTankbeurten();
+		//gekozenVlucht.wijzigLanding(gekozenVlucht.geefAantalLandingen(), gekozenVlucht.geefLanding(0).geefLocatie());
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
 		

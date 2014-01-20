@@ -35,6 +35,8 @@ public class Vliegtuig {
 	private static final int VLIEGTUIG_SNELHEID = 800; // Maximale snelheid van
 														// het vliegtuig in km/h
 	private int aantalLandingen; // De route die het vliegtuig aflegt: een
+	
+	private int aantalMogelijkeBestemmingen; //Gebaseerd op geefMogelijkeLandingen();
 									// rijtje landingen
 	private Random	RANDOM = new Random(); //Nodig voor het genereren van random getallen
 	private Landing[] route;
@@ -241,7 +243,36 @@ public class Vliegtuig {
 		}
 	}
 	
-	//
+	public void voegPassendeLandingToe() {
+		int resterendeTijd = 1200 - geefRouteDuur();
+		int randomBeginpuntInt = RANDOM.nextInt(aantalLandingen);
+		Landing randomBeginpunt = route[randomBeginpuntInt];
+		Landing[] mogelijkeBestemmingen = geefMogelijkeBestemmingen(randomBeginpunt, resterendeTijd, true);
+		
+		//System.out.println("resterende tijd: " + resterendeTijd + "\nrandomBeginpuntInt " + randomBeginpuntInt + "\ngeefRouteDuur() " + geefRouteDuur());
+		
+		if (aantalMogelijkeBestemmingen > 0) {
+			insertLanding(randomBeginpuntInt, mogelijkeBestemmingen[RANDOM.nextInt(aantalMogelijkeBestemmingen)]);
+		}
+		
+		//System.out.println("resterende tijd: " + resterendeTijd + "\nrandomBeginpuntInt " + randomBeginpuntInt + "\ngeefRouteDuur() " + geefRouteDuur() + "\n");
+		/*
+		for(int i=0; i<mogelijkeBestemmingen.length-1 ;i++){
+			System.out.println("resterende tijd: " + resterendeTijd +
+					"\nrandomBeginpuntInt " + randomBeginpuntInt +
+					"\ngeefRouteDuur() " + geefRouteDuur() + 
+					"\nmogelijkeBestemming.loc() " + mogelijkeBestemmingen[i].geefLoc() +
+					"\ngeefVliegduurNaar() " + randomBeginpunt.geefVliegduurNaar(mogelijkeBestemmingen[i].geefLoc(), 800) +
+					"\ni " + i + "\n");
+			if(randomBeginpunt.geefVliegduurNaar(mogelijkeBestemmingen[i].geefLoc(), VLIEGTUIG_SNELHEID) < resterendeTijd){ //check of er plek is om de mogelijkelanding toe te voegen
+				insertLanding(randomBeginpuntInt, mogelijkeBestemmingen[i]);
+				return;
+			}
+		}
+		*/
+	}
+	
+	//geef een array van landingen met alle mogelijke bestemmingen vanaf een bepaald beginput. Gegeven een duur. Dit kan een minimale of een maximale duur zijn (boolean minimaleDuur)
 	public Landing[] geefMogelijkeBestemmingen(Landing locatie, int duur, boolean minimaleDuur) {
 		Landing[] resultaat = new Landing[City.CITIES.size()];
 		int locatieIndex = locatie.geefLoc();
@@ -256,6 +287,7 @@ public class Vliegtuig {
 				aantalElementen++;
 			}
 		}
+		aantalMogelijkeBestemmingen = aantalElementen;
 		return resultaat;
 		//zou kunnen dat dit een conflict veroorzaakt met de tankbeurten.
 	}
@@ -359,15 +391,16 @@ public class Vliegtuig {
 
 	// Voegt een Landing toe op index
 	public boolean insertLanding(int index, Landing landing) {
-		if (index < route.length) {
+		if (index < aantalLandingen) {
 			for (int i = aantalLandingen; i > index; i--) {
 				route[i] = route[i - 1];
 			}
 			route[index] = landing;
 			aantalLandingen++;
+			return true;
 		}
 		System.out.println("insertLanding: te grote index (" + index + "/"
-				+ (route.length - 1) + ")");
+				+ (aantalLandingen - 1) + ")");
 		return false;
 	}
 
