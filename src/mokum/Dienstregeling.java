@@ -114,6 +114,7 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		gekozenVlucht.wijzigLanding(random_landing,nieuweStad);
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
+		
 	}
 	
 	//Maakt een volledig random dienstregeling

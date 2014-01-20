@@ -211,7 +211,6 @@ public class Vliegtuig {
 	}
 
 	// Maakt een route van random landingen die ONGEVEER duur minuten kost
-	/*
 	public void maakRandomRoute(int duur) {
 		aantalLandingen = 0;
 		route = new Landing[MAX_ROUTE_LENGTE];
@@ -220,29 +219,9 @@ public class Vliegtuig {
 				break;
 			}
 		}
-		planTankbeurten();
-	}
-	*/
-	
-	public void maakRandomRoute(int duur){
-		double afgelegdeAfstand = 0;
-		route = new Landing[MAX_ROUTE_LENGTE];
-		Landing beginpunt = new Landing();
-		route[0] = beginpunt;
-		aantalLandingen = 1;
-		for(int i=0;i<MAX_ROUTE_LENGTE;i++){ //voert dit dus 20x uit, misschien moeten we dit vervangen door een betere methode
-			Landing temp = new Landing();
-			if(geefRouteDuur() + checkDuurToename(temp,afgelegdeAfstand) < duur){ //check of er plek is om de landing temp toe te voegen
-				route[aantalLandingen] = temp;
-				afgelegdeAfstand += temp.geefAfstandNaar(route[aantalLandingen-1].geefLoc());
-				aantalLandingen++;
-			}
-		}
-		System.out.println(geefRouteDuur());
 		if(!langsThuishavenGeweest()){
 			route[RANDOM.nextInt(aantalLandingen)] = new Landing(City.CITIES.get(0)); //verander een van de landingen in Amsterdam
 		}
-		//door het aanpassen van een landing in amsterdam kan de lengte nu te lang zijn geworden
 		route[aantalLandingen] = route[0]; //eindlocatie inplannen
 		aantalLandingen++;
 		planTankbeurten();
@@ -279,14 +258,6 @@ public class Vliegtuig {
 		}
 		return resultaat;
 		//zou kunnen dat dit een conflict veroorzaakt met de tankbeurten.
-	}
-
-	
-	private double checkDuurToename(Landing landing,double afgelegdeAfstand){
-		//is niet exact, wordt enkel als schatting tijdens het creeeren van initiele random routes
-		double afstandsToename = landing.geefAfstandNaar(route[aantalLandingen-1].geefLoc()) + landing.geefAfstandNaar(route[0].geefLoc()); //de afstand van de vorige landing naar deze, en van deze naar eindbestemming
-		double duur = afstandsToename / (VLIEGTUIG_SNELHEID * 60) + 60 + Math.floor((afgelegdeAfstand + afstandsToename)/MAX_BEREIK) * 60; //vliegtijd + aantal landingen + aantal tankbeurten
-		return duur;
 	}
 
 	// WijzigLanding bestaat uit meerdere methoden die eigenschappen van een
