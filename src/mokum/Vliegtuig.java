@@ -260,7 +260,20 @@ public class Vliegtuig {
 				aantalLandingen--;
 			}
 		}
+	}
+	
+	public Landing[] geefMogelijkeBestemmingen(Landing locatie, int maxAfstand) {
+		Landing[] resultaat = new Landing[City.CITIES.size()];
+		int locatieIndex = locatie.geefLoc();
+		int aantalElementen = 0;
 		
+		for (int i = 0; i<City.CITIES.size(); i++) {
+			if (locatieIndex != i && locatie.geefAfstandNaar(i) <= maxAfstand) {
+				resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
+				aantalElementen++;
+			}
+		}
+		return resultaat;
 	}
 
 	
