@@ -71,7 +71,7 @@ public class DienstregelingCanvas extends JPanel {
 		g.setColor(Color.black);
 		g.drawString("Home", x + 20, y);
 		for(int i=0; i<32;i++) {
-			double convert = x + 130 + i * (60 * scaleFactor);
+			double convert = x + 140 + i * (60 * scaleFactor);
 			int xPointer 	= (int) convert;
 			int time			= (6 + i) % 24;
 			String timeStr;
