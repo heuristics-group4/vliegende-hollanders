@@ -244,7 +244,7 @@ public class Vliegtuig {
 	}
 	
 	public boolean wordtIngekort(int mogelijkeExtraDuur) {
-		return geefRouteDuur()+mogelijkeExtraDuur > 1200;
+		return geefRouteDuur()+mogelijkeExtraDuur > Dienstregeling.MINUTEN_PER_DAG;
 	}
 	
 	public void voegPassendeLandingToe() {
