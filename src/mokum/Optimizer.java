@@ -75,7 +75,7 @@ public class Optimizer {
 				//maak nieuwe kids aan
 				current_population_size = survivors_each_iteration;
 				for(int j=survivors_each_iteration; j<population_size; j++){
-					population[j] = population[j-survivors_each_iteration];
+					population[j] = population[j%survivors_each_iteration];
 					population[j].wijzigRandomLandingVanRandomVliegtuig();
 					current_population_size++;
 				}
