@@ -114,7 +114,18 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
-		gekozenVlucht.voegPassendeLandingToe();
+		
+		int resterendeTijd = MINUTEN_PER_DAG - gekozenVlucht.geefRouteDuur();
+		int randomBeginpuntInt = RANDOM.nextInt(gekozenVlucht.aantalLandingen-1);
+		Landing randomBeginpunt = gekozenVlucht.route[randomBeginpuntInt];
+		Landing[] mogelijkeBestemmingen = gekozenVlucht.geefMogelijkeBestemmingen(randomBeginpunt, resterendeTijd, true);		
+		if (gekozenVlucht.aantalMogelijkeBestemmingen > 0) {
+			Landing mogelijkeBestemming = mogelijkeBestemmingen[RANDOM.nextInt(gekozenVlucht.aantalMogelijkeBestemmingen)];
+			gekozenVlucht.insertLanding(randomBeginpuntInt+1, mogelijkeBestemming);
+		}
+		
+		
+		
 		gekozenVlucht.resetTankbeurten();
 		//gekozenVlucht.wijzigLanding(gekozenVlucht.geefAantalLandingen(), gekozenVlucht.geefLanding(0).geefLocatie());
 		gekozenVlucht.planTankbeurten();
