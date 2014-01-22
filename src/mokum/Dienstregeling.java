@@ -147,7 +147,12 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 	}
 	
 	public static void maakPKmatrix() {
-		
+		double[][]PKmatrix = new double[City.CITIES.size()][City.CITIES.size()];
+		for(int i = 0; i < City.CITIES.size(); i ++){
+			for(int j = 0; j < City.CITIES.size(); j++){
+				PKmatrix[i][j] = PASSENGERS[i][j] * City.AFSTAND[i][j];
+			}
+		}
 	}
 	
 	//Maakt een vertrekArray met de volgende info:
