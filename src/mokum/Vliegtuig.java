@@ -231,7 +231,7 @@ public class Vliegtuig {
 	}
 	
 	public void ingekort(){
-		while(geefRouteDuur() > 1200){
+		while(geefRouteDuur() > Dienstregeling.MINUTEN_PER_DAG){
 			if(route[aantalLandingen-2].geefLocatieNaam() != Vliegtuig.geefThuishaven()){
 				route[aantalLandingen-2] = route[aantalLandingen-1];
 				aantalLandingen--;
