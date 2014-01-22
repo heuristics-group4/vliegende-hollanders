@@ -46,7 +46,7 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 	};
 	
 	
-	private static final	int 			MINUTEN_PER_DAG		= 1200; 	//Het aantal minuten waartussen gevlogen kan worden (20*60)
+	public static final	int 			MINUTEN_PER_DAG		= 1200; 	//Het aantal minuten waartussen gevlogen kan worden (20*60)
 	private static final	int			VLOOTGROOTTE			= 1;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
 	private					Vliegtuig[]	dienstRegeling;					//De verzameling vliegtuigen van Mokum Airlines
 	private Random	RANDOM = new Random(); //Nodig voor het genereren van random getallen
@@ -110,8 +110,13 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		
 		City nieuweStad = City.CITIES.get(RANDOM.nextInt(City.CITIES.size()));
 		
-		
 		gekozenVlucht.wijzigLanding(random_landing,nieuweStad);
+		
+		gekozenVlucht.planTankbeurten();
+		gekozenVlucht.ingekort();
+		gekozenVlucht.voegPassendeLandingToe();
+		gekozenVlucht.resetTankbeurten();
+		//gekozenVlucht.wijzigLanding(gekozenVlucht.geefAantalLandingen(), gekozenVlucht.geefLanding(0).geefLocatie());
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
 		
@@ -146,6 +151,7 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		return passagiersKM;
 	}
 	
+<<<<<<< HEAD
 	public static void maakPKmatrix() {
 		double[][]PKmatrix = new double[City.CITIES.size()][City.CITIES.size()];
 		for(int i = 0; i < City.CITIES.size(); i ++){
@@ -154,6 +160,16 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 			}
 		}
 	}
+=======
+   public static void maakPKmatrix() {
+	   double[][]PKmatrix = new double[City.CITIES.size()][City.CITIES.size()];
+       for(int i = 0; i < City.CITIES.size(); i ++) {
+    	   for(int j = 0; j < City.CITIES.size(); j++) {
+    		   PKmatrix[i][j] = PASSENGERS[i][j] * City.AFSTAND[i][j];
+    	   }
+		}
+   	}
+>>>>>>> GJ
 	
 	//Maakt een vertrekArray met de volgende info:
 	//1)Vertrektijd 2)Vertrekpunt 3)Bestemming 4)vliegtuig capaciteit

@@ -92,7 +92,8 @@ public class Landing {
 	
 	//geef de vliegtijd van deze landing naar een nieuwe bestemming (index)
 	public int geefVliegduurNaar(int bestemming, int snelheid) {
-		return geefAfstandNaar(bestemming) / snelheid * 60; //in minuten
+		int resultaat = geefAfstandNaar(bestemming);
+		return resultaat / snelheid * 60; //in minuten
 	}
 	
 	//Geeft de afstand van deze landing naar een nieuwe bestemming (index)
