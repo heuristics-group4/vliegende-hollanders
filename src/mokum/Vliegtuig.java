@@ -243,16 +243,26 @@ public class Vliegtuig {
 		}
 	}
 	
+	public boolean wordtIngekort(int mogelijkeExtraDuur) {
+		return geefRouteDuur()+mogelijkeExtraDuur > 1200;
+	}
+	
 	public void voegPassendeLandingToe() {
 		int resterendeTijd = 1200 - geefRouteDuur();
-		int randomBeginpuntInt = RANDOM.nextInt(aantalLandingen);
+		int randomBeginpuntInt = RANDOM.nextInt(aantalLandingen-1);
 		Landing randomBeginpunt = route[randomBeginpuntInt];
 		Landing[] mogelijkeBestemmingen = geefMogelijkeBestemmingen(randomBeginpunt, resterendeTijd, true);
 		
-		//System.out.println("resterende tijd: " + resterendeTijd + "\nrandomBeginpuntInt " + randomBeginpuntInt + "\ngeefRouteDuur() " + geefRouteDuur());
+		/*System.out.println("resterende tijd: " + resterendeTijd + "\nrandomBeginpuntInt " + randomBeginpuntInt + "\ngeefRouteDuur() " + geefRouteDuur());
+		Landing mogelijkeBestemming;
+		do {
+			mogelijkeBestemming = mogelijkeBestemmingen[RANDOM.nextInt(aantalMogelijkeBestemmingen)];
+		} while (wordtIngekort(randomBeginpunt.geefVliegduurNaar(mogelijkeBestemming.geefLoc(), VLIEGTUIG_SNELHEID)));
+		*/
 		
 		if (aantalMogelijkeBestemmingen > 0) {
-			insertLanding(randomBeginpuntInt, mogelijkeBestemmingen[RANDOM.nextInt(aantalMogelijkeBestemmingen)]);
+			Landing mogelijkeBestemming = mogelijkeBestemmingen[RANDOM.nextInt(aantalMogelijkeBestemmingen)];
+			insertLanding(randomBeginpuntInt+1, mogelijkeBestemming);
 		}
 		
 		//System.out.println("resterende tijd: " + resterendeTijd + "\nrandomBeginpuntInt " + randomBeginpuntInt + "\ngeefRouteDuur() " + geefRouteDuur() + "\n");
@@ -273,18 +283,23 @@ public class Vliegtuig {
 	}
 	
 	//geef een array van landingen met alle mogelijke bestemmingen vanaf een bepaald beginput. Gegeven een duur. Dit kan een minimale of een maximale duur zijn (boolean minimaleDuur)
-	public Landing[] geefMogelijkeBestemmingen(Landing locatie, int duur, boolean minimaleDuur) {
+	public Landing[] geefMogelijkeBestemmingen(Landing beginLocatie, int duur, boolean isMinimaleDuur) {
 		Landing[] resultaat = new Landing[City.CITIES.size()];
-		int locatieIndex = locatie.geefLoc();
+		int beginLocatieIndex = beginLocatie.geefLoc();
 		int aantalElementen = 0;
 		
 		for (int i = 0; i<City.CITIES.size(); i++) {
-			if (minimaleDuur && locatieIndex != i && locatie.geefVliegduurNaar(i, VLIEGTUIG_SNELHEID) <= duur) {
-				resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
-				aantalElementen++;
-			} else if (!minimaleDuur && locatieIndex != i && locatie.geefVliegduurNaar(i, VLIEGTUIG_SNELHEID) >= duur) {
-				resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
-				aantalElementen++;
+			//als startpunt niet gekozen punt is
+			if (beginLocatieIndex != i) {
+				if (isMinimaleDuur) {
+					if (beginLocatie.geefVliegduurNaar(i, VLIEGTUIG_SNELHEID) <= duur){
+						resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
+						aantalElementen++;
+					}
+				} else if (beginLocatie.geefVliegduurNaar(i, VLIEGTUIG_SNELHEID) >= duur) {
+					resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
+					aantalElementen++;
+				}
 			}
 		}
 		aantalMogelijkeBestemmingen = aantalElementen;
@@ -391,7 +406,7 @@ public class Vliegtuig {
 
 	// Voegt een Landing toe op index
 	public boolean insertLanding(int index, Landing landing) {
-		if (index < aantalLandingen) {
+		if (index < route.length) {
 			for (int i = aantalLandingen; i > index; i--) {
 				route[i] = route[i - 1];
 			}
@@ -400,7 +415,7 @@ public class Vliegtuig {
 			return true;
 		}
 		System.out.println("insertLanding: te grote index (" + index + "/"
-				+ (aantalLandingen - 1) + ")");
+				+ (route.length - 1) + ")");
 		return false;
 	}
 
