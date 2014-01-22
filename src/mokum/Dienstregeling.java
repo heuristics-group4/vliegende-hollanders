@@ -45,19 +45,20 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		{441,256,62,423,215,432,412,128,361,128,138,360,87,181,113,389,200,141,300,281,337,9,180,203,379,290,165,0},
 	};
 	
-	
+	public int[][]actueelPassagiers = new int[City.CITIES.size()][City.CITIES.size()]; //De actuelle passagiers aantallen per dag
 	public static final	int 			MINUTEN_PER_DAG		= 1200; 	//Het aantal minuten waartussen gevlogen kan worden (20*60)
 	private static final	int			VLOOTGROOTTE			= 1;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
 	private					Vliegtuig[]	dienstRegeling;					//De verzameling vliegtuigen van Mokum Airlines
 	private Random	RANDOM = new Random(); //Nodig voor het genereren van random getallen
 	
-	//constructors
-	public Dienstregeling() {
+	//constructors	
+	public Dienstregeling(){
 		dienstRegeling = new Vliegtuig[VLOOTGROOTTE];
 	}
 	
 	public Dienstregeling(boolean x) {
 		dienstRegeling = new Vliegtuig[VLOOTGROOTTE];
+		copyPassengers();
 		maakRandomDienstregeling();
 	}
 	
@@ -69,6 +70,17 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 	}
 	
 	/* METHODEN */
+	
+	public void copyPassengers(){
+		System.out.print("{");
+		for(int i = 0; i < City.CITIES.size(); i++){
+			for(int j = 0; j < City.CITIES.size(); j++){
+				actueelPassagiers[i][j] = PASSENGERS[i][j];
+				System.out.print(actueelPassagiers[i][j] + ",");
+			}
+			System.out.println("},");
+		}
+	}
 	
 	public Vliegtuig[] geefDienstregeling(){
 		return dienstRegeling;
@@ -109,24 +121,32 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		}*/
 		
 		City nieuweStad = City.CITIES.get(RANDOM.nextInt(City.CITIES.size()));
-		
+		//
 		gekozenVlucht.wijzigLanding(random_landing,nieuweStad);
 		
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
-		gekozenVlucht.voegPassendeLandingToe();
+		
+		int resterendeTijd = MINUTEN_PER_DAG - gekozenVlucht.geefRouteDuur();
+		int randomBeginpuntInt = RANDOM.nextInt(gekozenVlucht.aantalLandingen-1);
+		Landing randomBeginpunt = gekozenVlucht.route[randomBeginpuntInt];
+		Landing[] mogelijkeBestemmingen = gekozenVlucht.geefMogelijkeBestemmingen(randomBeginpunt, resterendeTijd, true);		
+		if (gekozenVlucht.aantalMogelijkeBestemmingen > 0) {
+			Landing mogelijkeBestemming = mogelijkeBestemmingen[RANDOM.nextInt(gekozenVlucht.aantalMogelijkeBestemmingen)];
+			gekozenVlucht.insertLanding(randomBeginpuntInt+1, mogelijkeBestemming);
+		}
 		gekozenVlucht.resetTankbeurten();
 		//gekozenVlucht.wijzigLanding(gekozenVlucht.geefAantalLandingen(), gekozenVlucht.geefLanding(0).geefLocatie());
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
-		
 	}
 	
 	//Maakt een volledig random dienstregeling
 	public void maakRandomDienstregeling() {
 		for(int i=0; i<VLOOTGROOTTE;i++) {
-			dienstRegeling[i] = new Vliegtuig();
+			dienstRegeling[i] = new Vliegtuig(actueelPassagiers);
 			dienstRegeling[i].maakRandomRoute(MINUTEN_PER_DAG);
+			actueelPassagiers = dienstRegeling[i].geefPassagiersLijst();
 		}
 	}
 	
