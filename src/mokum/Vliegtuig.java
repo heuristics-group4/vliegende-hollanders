@@ -262,7 +262,7 @@ public class Vliegtuig {
 	*/
 	
 	//geef een array van landingen met alle mogelijke bestemmingen vanaf een bepaald beginput. Gegeven een duur. Dit kan een minimale of een maximale duur zijn (boolean minimaleDuur)
-	public Landing[] geefMogelijkeBestemmingen(Landing beginLocatie, int duur, boolean isMinimaleDuur) {
+	public Landing[] geefMogelijkeBestemmingen(Landing beginLocatie, int duur, boolean isMaximaleDuur) {
 		Landing[] resultaat = new Landing[City.CITIES.size()];
 		int beginLocatieIndex = beginLocatie.geefLoc();
 		int aantalElementen = 0;
@@ -270,7 +270,7 @@ public class Vliegtuig {
 		for (int i = 0; i<City.CITIES.size(); i++) {
 			//als startpunt niet gekozen punt is
 			if (beginLocatieIndex != i) {
-				if (isMinimaleDuur) {
+				if (isMaximaleDuur) {
 					if (beginLocatie.geefVliegduurNaar(i, VLIEGTUIG_SNELHEID) <= duur){
 						resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
 						aantalElementen++;
