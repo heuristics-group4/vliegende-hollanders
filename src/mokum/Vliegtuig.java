@@ -239,7 +239,10 @@ public class Vliegtuig {
 			// Deze while loop voegt pas een landing toe op index [random] als de vorige en volgende bestemming binnen het max-bereik t.o.v. Amsterdam liggen.
 			while(true){
 				random = RANDOM.nextInt(aantalLandingen-1);
-				if(route[random - 1].geefAfstandNaar(0) <= 3300 && route[random + 1].geefAfstandNaar(0) <= 3300){
+				if(nietLeeg(geefLoc(random),geefLoc(random+1)) && random == 0 && route[random + 1].geefAfstandNaar(0) <= 3300){
+					break;
+				}
+				if(nietLeeg(geefLoc(random-1),geefLoc(random)) && nietLeeg(geefLoc(random),geefLoc(random+1)) && route[random - 1].geefAfstandNaar(0) <= 3300 && route[random + 1].geefAfstandNaar(0) <= 3300){
 					break;
 				}
 			}
