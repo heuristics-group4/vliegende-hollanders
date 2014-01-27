@@ -241,9 +241,10 @@ public class Vliegtuig {
 				random = RANDOM.nextInt(aantalLandingen-1);
 				if(nietLeeg(geefLoc(random),geefLoc(random+1)) && random == 0 && route[random + 1].geefAfstandNaar(0) <= 3300){
 					break;
-				}
-				if(nietLeeg(geefLoc(random-1),geefLoc(random)) && nietLeeg(geefLoc(random),geefLoc(random+1)) && route[random - 1].geefAfstandNaar(0) <= 3300 && route[random + 1].geefAfstandNaar(0) <= 3300){
-					break;
+				}if(random != 0){
+					if(nietLeeg(geefLoc(random-1),geefLoc(random)) && nietLeeg(geefLoc(random),geefLoc(random+1)) && route[random - 1].geefAfstandNaar(0) <= 3300 && route[random + 1].geefAfstandNaar(0) <= 3300){
+						break;
+					}
 				}
 			}
 			route[random] = new Landing(City.CITIES.get(0)); //verander een van de landingen in Amsterdam
@@ -256,18 +257,17 @@ public class Vliegtuig {
 			}
 			updatePassagiers(route[random].geefIndex(THUISHAVEN), geefLoc(random + 1));
 		}
-		//eindlocatie inplannen
+		//eindlocatie inplannen -> eindstad = beginstad
 		if(route[aantalLandingen-1].geefAfstandNaar(route[0].geefLoc()) <= 3300){
 			route[aantalLandingen] = route[0];
-		} else {
+		} else { //als de max duur van de laatste landing naar de beginstad wordt overschreden:
 			while(true){
-				int location = RANDOM.nextInt(City.CITIES.size());
-				if(route[aantalLandingen-1].geefAfstandNaar(location) <= 3300 && route[0].geefAfstandNaar(location) <= 3300 && nietLeeg(geefLoc(aantalLandingen-1),geefLoc(location))){
+				int location = RANDOM.nextInt(City.CITIES.size()-1);
+				if(route[aantalLandingen-1].geefAfstandNaar(location) <= 3300 && route[0].geefAfstandNaar(location) <= 3300 && nietLeeg(geefLoc(aantalLandingen-1), location)){
 					route[aantalLandingen] = new Landing(City.CITIES.get(location));
 					updatePassagiers(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen));
 					aantalLandingen++;
 					route[aantalLandingen] = route[0];
-					updatePassagiers(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen));
 				}
 			}
 		}
