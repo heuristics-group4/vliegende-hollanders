@@ -41,11 +41,14 @@ public class Vliegtuig {
 	private Random	RANDOM = new Random(); //Nodig voor het genereren van random getallen
 	public Landing[] route;
 	private int [][]passagiers;
+	private int [][]copyList;
 
 	// Constructors
 	public Vliegtuig(int[][]passagiers) {
 		aantalLandingen = 0;
 		this.passagiers = passagiers;
+		System.out.println("\n");
+		copyList();
 		route = new Landing[MAX_ROUTE_LENGTE];
 	}
 
@@ -61,6 +64,17 @@ public class Vliegtuig {
 	// Geeft het aantal landingen in de huidige route van het vliegtuig
 	public int geefAantalLandingen() {
 		return aantalLandingen;
+	}
+
+	private void copyList(){
+		copyList = new int[City.CITIES.size()][City.CITIES.size()];
+		for(int i = 0; i < City.CITIES.size(); i++){
+			for(int j = 0; j < City.CITIES.size(); j++){
+				System.out.print(passagiers[i][j] + ",");
+				copyList[i][j] = passagiers[i][j];
+			}
+			System.out.println("},");
+		}
 	}
 
 	// Geeft de snelheid van het vliegtuig
@@ -221,23 +235,62 @@ public class Vliegtuig {
 			}
 		}
 		if(!langsThuishavenGeweest()){
-			route[RANDOM.nextInt(aantalLandingen)] = new Landing(City.CITIES.get(0)); //verander een van de landingen in Amsterdam
+			int random;
+			// Deze while loop voegt pas een landing toe op index [random] als de vorige en volgende bestemming binnen het max-bereik t.o.v. Amsterdam liggen.
+			while(true){
+				random = RANDOM.nextInt(aantalLandingen-1);
+				if(route[random - 1].geefAfstandNaar(0) <= 3300 && route[random + 1].geefAfstandNaar(0) <= 3300){
+					break;
+				}
+			}
+			route[random] = new Landing(City.CITIES.get(0)); //verander een van de landingen in Amsterdam
+			if(random != 0){
+				passagiers[geefLoc(random-1)][geefLoc(random)] = copyList[geefLoc(random-1)][geefLoc(random)];
+			}
+			passagiers[geefLoc(random)][geefLoc(random + 1)] = copyList[geefLoc(random)][geefLoc(random + 1)];
+			if(random != 0){
+				updatePassagiers(geefLoc(random-1), route[random].geefIndex(THUISHAVEN));
+			}
+			updatePassagiers(route[random].geefIndex(THUISHAVEN), geefLoc(random + 1));
 		}
-		route[aantalLandingen] = route[0]; //eindlocatie inplannen
+		//eindlocatie inplannen
+		if(route[aantalLandingen-1].geefAfstandNaar(route[0].geefLoc()) <= 3300){
+			route[aantalLandingen] = route[0];
+		} else {
+			while(true){
+				int location = RANDOM.nextInt(City.CITIES.size());
+				if(route[aantalLandingen-1].geefAfstandNaar(location) <= 3300 && route[0].geefAfstandNaar(location) <= 3300 && nietLeeg(geefLoc(aantalLandingen-1),geefLoc(location))){
+					route[aantalLandingen] = new Landing(City.CITIES.get(location));
+					updatePassagiers(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen));
+					aantalLandingen++;
+					route[aantalLandingen] = route[0];
+					updatePassagiers(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen));
+				}
+			}
+		}
+		updatePassagiers(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen));
 		aantalLandingen++;
 		planTankbeurten();
+		System.out.println("\n Duur: " + geefRouteDuur());
 		ingekort();
+		System.out.println("\n Duur ingekort: " + geefRouteDuur());
 	}
 
 	public void ingekort(){
-		while(geefRouteDuur() > Dienstregeling.MINUTEN_PER_DAG){
+		while(geefRouteDuur() > Dienstregeling.MINUTEN_PER_DAG && aantalLandingen >= 4){
 			if(route[aantalLandingen-2].geefLocatieNaam() != Vliegtuig.geefThuishaven()){
+				passagiers[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)] = copyList[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)];
+				passagiers[geefLoc(aantalLandingen-2)][geefLoc(aantalLandingen-1)] = copyList[geefLoc(aantalLandingen-2)][geefLoc(aantalLandingen-1)];
 				route[aantalLandingen-2] = route[aantalLandingen-1];
 				aantalLandingen--;
+				updatePassagiers(geefLoc(aantalLandingen-2),geefLoc(aantalLandingen-1));
 			} else {
+				passagiers[geefLoc(aantalLandingen-4)][geefLoc(aantalLandingen-3)] = copyList[geefLoc(aantalLandingen-4)][geefLoc(aantalLandingen-3)];
+				passagiers[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)] = copyList[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)];
 				route[aantalLandingen-3] = route[aantalLandingen-2];
 				route[aantalLandingen-2] = route[aantalLandingen-1];
 				aantalLandingen--;
+				updatePassagiers(geefLoc(aantalLandingen-3),geefLoc(aantalLandingen-2));
 			}
 		}
 	}
@@ -352,16 +405,15 @@ public class Vliegtuig {
 	// Voegt een random landing toe op de eerstvolgende lege plek in de route
 	public boolean voegRandomLandingToe() {
 		if (aantalLandingen < route.length) {
-			boolean x = true;
 			//Deze while-loop voegt pas een landing toe als er meer dan 0 passagiers zijn vanaf de source naar destination.
-			while(x){
+			while(true){
 				route[aantalLandingen] = new Landing();
 				if(aantalLandingen == 0){
 					break;
 				}
-				else if(nietLeeg(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen))){
+				else if(nietLeeg(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen)) && afStand()){
 					updatePassagiers(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen));
-					x = false;
+					break;
 				}
 			}
 			aantalLandingen++;
@@ -371,13 +423,22 @@ public class Vliegtuig {
 		return false;
 	}
 
-	// Update de passagiers lijst na een vlucht
+	// Update de passagiers-lijst na een vlucht
 	private void updatePassagiers(int source, int destination){
 		if(passagiers[source][destination] >= 199){
+			System.out.println("Oude waarde: " + passagiers[source][destination] + " - Van: " + City.CITIES.get(source).getName() + " (" + source +") "+ " Naar: " + City.CITIES.get(destination).getName() + " (" + destination +")" );
 			passagiers[source][destination] = passagiers[source][destination] - 199;
+			System.out.println("Nieuwe waarde: " + passagiers[source][destination]);
 		} else {
+			System.out.println("Oude waarde: " + passagiers[source][destination] + " - Van: " + City.CITIES.get(source).getName() + " (" + source +") "+ " Naar: " + City.CITIES.get(destination).getName() + " (" + destination +")" );
 			passagiers[source][destination] = passagiers[source][destination] = 0;
+			System.out.println("Nieuwe waarde: " + passagiers[source][destination]);
 		}
+	}
+
+	//Boolean die kijkt of de afstand tussen twee locaties niet groter dan 3300 bedraagt
+	private boolean afStand(){
+		return route[aantalLandingen-1].geefAfstandNaar(route[aantalLandingen].geefLoc()) <= 3300;
 	}
 
 	// Geef locatie op index
@@ -387,7 +448,7 @@ public class Vliegtuig {
 
 	//Boolean die kijkt of het aantal passagiers van source naar destination groter dan 0 is.
 	private boolean nietLeeg(int source, int destination){
-		return passagiers[source][destination] >= 0;
+		return passagiers[source][destination] > 0;
 	}
 
 	//retourneert de passagierslijst
