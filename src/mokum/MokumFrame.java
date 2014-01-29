@@ -164,14 +164,13 @@ public class MokumFrame extends JFrame {
 	// random methode die nu gebruikt wordt
 	public Dienstregeling maakDienstregeling() {
 		//Dienstregeling d = new Dienstregeling(true);
-		Dienstregeling d = Optimizer.Optimize(1,1,2);
+		Dienstregeling d = Optimizer.Optimize(100000,1,2);
 		return d;
 	}
 
 	public static void main(String[] args) {
 		City.initialiseCities();
-		Dienstregeling.maakPKmatrix();
-		
+		//Dienstregeling.maakPKmatrix();
 		new MokumFrame(); //Hier start de magie. 
 		//Even een voorbeeldje (voorbeeld is met een "D" ) :P
 	}

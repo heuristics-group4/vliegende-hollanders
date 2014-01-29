@@ -10,9 +10,9 @@ import java.util.Random;
 /*	Het Dienstregelingobject staat voor de representatie van het probleem.
 	Het bevat algemene informatie van het probleem en het beheert de vloot van
 	Mokum Airlines
-*/
+ */
 public class Dienstregeling implements Comparable<Dienstregeling>{
-	
+
 	//Het geschatte aantal passagiers dat van rij Y naar kolom X wil vliegen (gaat op index)
 	private static int[][] PASSENGERS = {
 		{0,213,119,278,89,302,388,153,341,273,112,361,302,324,269,206,147,400,367,172,45,321,100,135,86,95,257,371},
@@ -44,48 +44,48 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		{312,322,57,159,135,450,15,12,92,47,41,440,315,39,193,124,224,68,439,28,290,287,366,153,427,115,0,314},
 		{441,256,62,423,215,432,412,128,361,128,138,360,87,181,113,389,200,141,300,281,337,9,180,203,379,290,165,0},
 	};
-	
+
 	public int[][]actueelPassagiers = new int[City.CITIES.size()][City.CITIES.size()]; //De actuelle passagiers aantallen per dag
 	public static final	int 			MINUTEN_PER_DAG		= 1200; 	//Het aantal minuten waartussen gevlogen kan worden (20*60)
 	private static final	int			VLOOTGROOTTE			= 1;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
 	private					Vliegtuig[]	dienstRegeling;					//De verzameling vliegtuigen van Mokum Airlines
 	private Random	RANDOM = new Random(); //Nodig voor het genereren van random getallen
-	
+
 	//constructors	
 	public Dienstregeling(){
 		dienstRegeling = new Vliegtuig[VLOOTGROOTTE];
 	}
-	
+
 	public Dienstregeling(boolean x) {
 		dienstRegeling = new Vliegtuig[VLOOTGROOTTE];
 		copyPassengers();
 		maakRandomDienstregeling();
 	}
-	
+
 	public Dienstregeling(Dienstregeling other) {
 		this.dienstRegeling = new Vliegtuig[VLOOTGROOTTE];
 		for(int i=0; i<VLOOTGROOTTE; i++){
 			dienstRegeling[i] = new Vliegtuig(other.dienstRegeling[i]);
 		}
 	}
-	
+
 	/* METHODEN */
-	
+
 	public void copyPassengers(){
-		System.out.print("{");
 		for(int i = 0; i < City.CITIES.size(); i++){
 			for(int j = 0; j < City.CITIES.size(); j++){
 				actueelPassagiers[i][j] = PASSENGERS[i][j];
-				System.out.print(actueelPassagiers[i][j] + ",");
+				//System.out.print(actueelPassagiers[i][j] + ",");
 			}
 			System.out.println("},");
+			//System.out.println("Kopieer");
 		}
 	}
-	
+
 	public Vliegtuig[] geefDienstregeling(){
 		return dienstRegeling;
 	}
-	
+
 	//Geeft het vliegtuig op index
 	public Vliegtuig geefVliegtuig(int index) {
 		if(index > VLOOTGROOTTE -1) {
@@ -94,39 +94,42 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		}
 		return dienstRegeling[index];
 	}
-		
+
 	//Geeft de grootte van de vloot
 	public int geefGrootte() {
 		return VLOOTGROOTTE;
 	}
-	
+
 	public void wijzigRandomLandingVanRandomVliegtuig(){
+		// Kies random vlucht
 		int random_vlucht = RANDOM.nextInt(VLOOTGROOTTE);
 		int random_landing;
 		Vliegtuig gekozenVlucht = dienstRegeling[random_vlucht];
 		Landing gekozenLanding;
+		// Kies randomlanding
 		do {
 			random_landing = RANDOM.nextInt(dienstRegeling[random_vlucht].geefAantalLandingen()-1);
 			gekozenLanding = dienstRegeling[random_vlucht].geefLanding(random_landing);
 		}
+		// Niet de thuishaven veranderen en minimaal een keer erlangs
 		while (gekozenLanding.geefLocatieNaam().equals(Vliegtuig.geefThuishaven()) &&
 				gekozenVlucht.aantalKeerThuishavenInRoute() == 1);
-		
+
 		gekozenVlucht.resetTankbeurten();
-		
+
 		/*Als random landing geen Thuishaven is
 		if (gekozenLanding.geefLocatieNaam().equals(Vliegtuig.geefThuishaven()) &&
 			gekozenVlucht.aantalKeerThuishavenInRoute() == 1) {
-			
+
 		}*/
-		
-		City nieuweStad = City.CITIES.get(RANDOM.nextInt(City.CITIES.size()));
+
+
 		//
-		gekozenVlucht.wijzigLanding(random_landing,nieuweStad);
-		
+		gekozenVlucht.wijzigLanding(random_landing, actueelPassagiers);
+
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
-		
+
 		int resterendeTijd = MINUTEN_PER_DAG - gekozenVlucht.geefRouteDuur();
 		int randomBeginpuntInt = RANDOM.nextInt(gekozenVlucht.aantalLandingen-1);
 		Landing randomBeginpunt = gekozenVlucht.route[randomBeginpuntInt];
@@ -140,29 +143,37 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
 	}
-	
+
 	//Maakt een volledig random dienstregeling
 	public void maakRandomDienstregeling() {
 		for(int i=0; i<VLOOTGROOTTE;i++) {
+			System.out.println(" Random dienstregeling ");
 			dienstRegeling[i] = new Vliegtuig(actueelPassagiers);
 			dienstRegeling[i].maakRandomRoute(MINUTEN_PER_DAG);
 			actueelPassagiers = dienstRegeling[i].geefPassagiersLijst();
+			System.out.println("Route geadd" + i);
+			for(int k = 0; k < City.CITIES.size(); k++){
+				for(int j = 0; j < City.CITIES.size(); j++){
+					//System.out.print(actueelPassagiers[k][j] + ",");
+				}
+				//System.out.println("},");
+			}
 		}
 	}
-	
+
 	//Telt het totaal aantal kilometers dat passagiers hebben afgelegd
 	public int telPassagiersKilometers() {
 		int		passagiersKM		= 0;
 		int[][] 	vertrekArray 		= maakVertrekArray();
 		int[][] 	passagiersMatrix	= new int[PASSENGERS.length][PASSENGERS.length];
 		multiArrayCopy(PASSENGERS, passagiersMatrix);
-		
+
 		for(int[] vertrek : vertrekArray) {
 			Landing l		 = new Landing(); //om de afstanden op te vragen
 			int vertrekpunt = vertrek[1];
 			int bestemming  = vertrek[2];
 			int capaciteit  = vertrek[3];
-			
+
 			//Neem de maximale capaciteit mee, of anders het aantal overgebleven passagiers dat wilt vliegen
 			int passagiersMee = Math.min(capaciteit, passagiersMatrix[vertrekpunt][bestemming]);
 			passagiersKM		+= l.geefAfstandTussen(vertrekpunt,bestemming) * passagiersMee;
@@ -170,16 +181,16 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		}
 		return passagiersKM;
 	}
-	
-   public static void maakPKmatrix() {
-	   double[][]PKmatrix = new double[City.CITIES.size()][City.CITIES.size()];
-       for(int i = 0; i < City.CITIES.size(); i ++) {
-    	   for(int j = 0; j < City.CITIES.size(); j++) {
-    		   PKmatrix[i][j] = PASSENGERS[i][j] * City.AFSTAND[i][j];
-    	   }
+
+	public static void maakPKmatrix() {
+		double[][]PKmatrix = new double[City.CITIES.size()][City.CITIES.size()];
+		for(int i = 0; i < City.CITIES.size(); i ++) {
+			for(int j = 0; j < City.CITIES.size(); j++) {
+				PKmatrix[i][j] = PASSENGERS[i][j] * City.AFSTAND[i][j];
+			}
 		}
-   	}
-	
+	}
+
 	//Maakt een vertrekArray met de volgende info:
 	//1)Vertrektijd 2)Vertrekpunt 3)Bestemming 4)vliegtuig capaciteit
 	//De array die teruggegeven wordt is gesorteert op vertrektijd van vroeg naar laat
@@ -189,11 +200,11 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 			int[][] nieuw = dienstRegeling[i].maakVertrekArray();
 			teSorteren = joinMultiArrays(teSorteren, nieuw);
 		}
-		
+
 		sort2dArray(teSorteren);
 		return teSorteren;
 	}
-	
+
 	//Voegt twee multi arrays samen
 	private int[][] joinMultiArrays(int[][] a, int[][] b) {
 		int[][] result = new int[a.length + b.length][2]; //de [2] kan elke waarde zijn, tijdelijke stakeholder die overschreven wordt
@@ -203,16 +214,16 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		for(int i=a.length; i<result.length; i++) {
 			result[i] = b[i - a.length];
 		}
-		
+
 		return result;
 	}
-	
+
 	//Sorteert een twee dimensionale array
 	private void sort2dArray(int[][] toSort)
 	{
 		quicksort(toSort, 0, toSort.length -1);
 	}
-	
+
 	//Sorteert een tweedimensionale array
 	private void quicksort(int[][] a, int left, int right) {
 		if (right <= left) return;
@@ -221,42 +232,42 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		quicksort(a, i+1, right);
 	}
 
-   // Helpt een multidimensionale array efficient te sorteren 
+	// Helpt een multidimensionale array efficient te sorteren 
 	// partition a[left] to a[right], assumes left < right
-    private int partition(int[][] a, int left, int right) {
-        int i = left - 1;
-        int j = right;
-        while (true) {
-            while (a[++i][0] < a[right][0])     
-                ;                               
-            while (a[right][0] < a[--j][0])     
-                if (j == left) break;           
-            if (i >= j) break;                  
-            exch(a, i, j);                      
-        }
-        exch(a, i, right);                      
-        return i;
-    }
+	private int partition(int[][] a, int left, int right) {
+		int i = left - 1;
+		int j = right;
+		while (true) {
+			while (a[++i][0] < a[right][0])     
+				;                               
+			while (a[right][0] < a[--j][0])     
+				if (j == left) break;           
+			if (i >= j) break;                  
+			exch(a, i, j);                      
+		}
+		exch(a, i, right);                      
+		return i;
+	}
 
-    // Helpt een multidimensionale array efficient te sorteren
-    private void exch(int[][] a, int i, int j) {
-        int[] swap = a[i];
-        a[i] = a[j];
-        a[j] = swap;
-    }
-	
-    //Kloont een multi array van source naar destination
-    private void multiArrayCopy(int[][] source,int[][] destination) {
+	// Helpt een multidimensionale array efficient te sorteren
+	private void exch(int[][] a, int i, int j) {
+		int[] swap = a[i];
+		a[i] = a[j];
+		a[j] = swap;
+	}
+
+	//Kloont een multi array van source naar destination
+	private void multiArrayCopy(int[][] source,int[][] destination) {
 		for (int i=0;i<source.length;i++)
 		{
-		System.arraycopy(source[i],0,destination[i],0,source[i].length);
+			System.arraycopy(source[i],0,destination[i],0,source[i].length);
 		}
 	}
-    
-    // Vergelijkt de dienstregeling met een andere dienstregeling object aan de hand van pasagierskilometers
-    public int compareTo(Dienstregeling other_dienstregeling){
-    	Integer kilometers2 = telPassagiersKilometers();
-    	Integer kilometers1 = other_dienstregeling.telPassagiersKilometers();
-    	return kilometers1.compareTo(kilometers2);
-    }
+
+	// Vergelijkt de dienstregeling met een andere dienstregeling object aan de hand van pasagierskilometers
+	public int compareTo(Dienstregeling other_dienstregeling){
+		Integer kilometers2 = telPassagiersKilometers();
+		Integer kilometers1 = other_dienstregeling.telPassagiersKilometers();
+		return kilometers1.compareTo(kilometers2);
+	}
 }
