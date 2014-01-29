@@ -47,11 +47,7 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 	
 	
 	public static final	int 			MINUTEN_PER_DAG		= 1200; 	//Het aantal minuten waartussen gevlogen kan worden (20*60)
-<<<<<<< HEAD
 	private static final	int			VLOOTGROOTTE			= 1;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
-=======
-	private static final	int			VLOOTGROOTTE			= 6;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
->>>>>>> SvS
 	private					Vliegtuig[]	dienstRegeling;					//De verzameling vliegtuigen van Mokum Airlines
 	private Random	RANDOM = new Random(); //Nodig voor het genereren van random getallen
 	
@@ -165,18 +161,8 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		}
 		return passagiersKM;
 	}
-	
-<<<<<<< HEAD
+    
 	public static void maakPKmatrix() {
-		double[][]PKmatrix = new double[City.CITIES.size()][City.CITIES.size()];
-		for(int i = 0; i < City.CITIES.size(); i ++){
-			for(int j = 0; j < City.CITIES.size(); j++){
-				PKmatrix[i][j] = PASSENGERS[i][j] * City.AFSTAND[i][j];
-			}
-		}
-	}
-=======
-   public static void maakPKmatrix() {
 	   double[][]PKmatrix = new double[City.CITIES.size()][City.CITIES.size()];
        for(int i = 0; i < City.CITIES.size(); i ++) {
     	   for(int j = 0; j < City.CITIES.size(); j++) {
@@ -184,8 +170,7 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
     	   }
 		}
    	}
->>>>>>> GJ
-	
+   
 	//Maakt een vertrekArray met de volgende info:
 	//1)Vertrektijd 2)Vertrekpunt 3)Bestemming 4)vliegtuig capaciteit
 	//De array die teruggegeven wordt is gesorteert op vertrektijd van vroeg naar laat

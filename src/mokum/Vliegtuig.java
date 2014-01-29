@@ -247,11 +247,7 @@ public class Vliegtuig {
 		return geefRouteDuur()+mogelijkeExtraDuur > Dienstregeling.MINUTEN_PER_DAG;
 	}
 	
-<<<<<<< HEAD
-	public void voegPassendeLandingToe() {
-=======
 	/*public void voegPassendeLandingToe() {
->>>>>>> SvS
 		int resterendeTijd = Dienstregeling.MINUTEN_PER_DAG - geefRouteDuur();
 		int randomBeginpuntInt = RANDOM.nextInt(aantalLandingen-1);
 		Landing randomBeginpunt = route[randomBeginpuntInt];
