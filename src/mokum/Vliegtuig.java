@@ -47,8 +47,6 @@ public class Vliegtuig {
 	public Vliegtuig(int[][]passagiers) {
 		aantalLandingen = 0;
 		this.passagiers = passagiers;
-		//System.out.println("\n");
-		System.out.println("Kopieer lijst");
 		copyList();
 		route = new Landing[MAX_ROUTE_LENGTE];
 	}
@@ -71,10 +69,8 @@ public class Vliegtuig {
 		copyList = new int[City.CITIES.size()][City.CITIES.size()];
 		for(int i = 0; i < City.CITIES.size(); i++){
 			for(int j = 0; j < City.CITIES.size(); j++){
-				//	System.out.print(passagiers[i][j] + ",");
 				copyList[i][j] = passagiers[i][j];
 			}
-			//System.out.println("},");
 		}
 	}
 
@@ -210,6 +206,7 @@ public class Vliegtuig {
 	}*/
 
 	// Voegt toeTeVoegen achteraan toe aan de huidige route als dit mogelijk is
+	
 	public boolean voegRouteToe(Landing[] toeTeVoegen) {
 		int nieuweLengte = this.aantalLandingen + toeTeVoegen.length;
 		if (nieuweLengte > MAX_ROUTE_LENGTE) {
@@ -231,12 +228,10 @@ public class Vliegtuig {
 		aantalLandingen = 0;
 		route = new Landing[MAX_ROUTE_LENGTE];
 		while (geefRouteDuur() < duur) {
-			System.out.println("\nDuur: " + geefRouteDuur());
 			if (!voegRandomLandingToe()) {
 				break;
 			}
 		}
-		System.out.println("\nNaar thuisHaven ");
 		if(!langsThuishavenGeweest()){
 			int random;
 			// Deze while loop voegt pas een landing toe op index [random] als de vorige en volgende bestemming binnen het max-bereik t.o.v. Amsterdam liggen.
@@ -244,37 +239,20 @@ public class Vliegtuig {
 				random = RANDOM.nextInt(aantalLandingen-1);
 				if(nietLeeg(geefLoc(random),geefLoc(random + 1)) && route[random + 1].geefAfstandNaar(0) <= 3300){
 					if(random == 0){
-						System.out.println("random = 0");
 						break;
 					} else if(nietLeeg(geefLoc(random-1),geefLoc(random)) && (route[random - 1].geefAfstandNaar(0) <= 3300)){
-						System.out.println("random != 0");
 						break;
 					}
-					System.out.println(" Nietleeg -1 en R: " + nietLeeg(geefLoc(random-1),geefLoc(random)) + " Nietleeg R en + 1: " + nietLeeg(geefLoc(random),geefLoc(random+1)) + " Afstand naar r + 1: " + route[random + 1].geefAfstandNaar(0) + " Afstand naar r -1: " + route[random - 1].geefAfstandNaar(0));
 				}
-				System.out.println("Random :" + random );
 			}
-			System.out.println("Random getal");
-			System.out.println("\nTerugzetten ");
 			if(random != 0){
-				System.out.println("Niet 0");
-				System.out.println(passagiers[geefLoc(random -1)][geefLoc(random)]);
 				passagiers[geefLoc(random-1)][geefLoc(random)] = copyList[geefLoc(random-1)][geefLoc(random)];
-				System.out.println(passagiers[geefLoc(random -1)][geefLoc(random)]);
-			}
-			System.out.println(passagiers[geefLoc(random)][geefLoc(random+1)]);
-			passagiers[geefLoc(random)][geefLoc(random + 1)] = copyList[geefLoc(random)][geefLoc(random + 1)];
-			System.out.println(passagiers[geefLoc(random)][geefLoc(random+1)]);
-			if(random != 0){
-				System.out.println("Niet 0");
-				System.out.println(passagiers[geefLoc(random -1)][geefLoc(random)]);
 				updatePassagiers(geefLoc(random-1), route[random].geefIndex(THUISHAVEN));
-				System.out.println("\n" +passagiers[geefLoc(random -1)][geefLoc(random)]);
 			}
+			passagiers[geefLoc(random)][geefLoc(random + 1)] = copyList[geefLoc(random)][geefLoc(random + 1)];
 			updatePassagiers(route[random].geefIndex(THUISHAVEN), geefLoc(random + 1));
 			route[random] = new Landing(City.CITIES.get(0)); //verander een van de landingen in Amsterdam
 		}
-		System.out.println("Thuishavencontrole");
 		//eindlocatie inplannen -> eindstad = beginstad
 		if(route[aantalLandingen-1].geefAfstandNaar(route[0].geefLoc()) <= 3300){
 			route[aantalLandingen] = route[0];
@@ -291,16 +269,10 @@ public class Vliegtuig {
 			}
 		}
 		updatePassagiers(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen));
-		aantalLandingen++;
-		
+		aantalLandingen++;	
 		planTankbeurten();
-		
-		//System.out.println("\n Duur: " + geefRouteDuur());
 		ingekort();
-
 	}
-	//System.out.println("\n Duur ingekort: " + geefRouteDuur());
-
 
 	public void ingekort(){
 		int random = 0;
@@ -319,30 +291,8 @@ public class Vliegtuig {
 			aantalLandingen--;
 			resetTankbeurten();
 			planTankbeurten();
-			System.out.println("\nIngekorte duur " + geefRouteDuur());
 		}
 	}
-
-	/*public void ingekort(){
-		while(geefRouteDuur() > Dienstregeling.MINUTEN_PER_DAG && aantalLandingen >= 4){
-			if(route[aantalLandingen-2].geefLocatieNaam() != Vliegtuig.geefThuishaven()){
-				passagiers[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)] = copyList[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)];
-				passagiers[geefLoc(aantalLandingen-2)][geefLoc(aantalLandingen-1)] = copyList[geefLoc(aantalLandingen-2)][geefLoc(aantalLandingen-1)];
-				route[aantalLandingen-2] = route[aantalLandingen-1];
-				route[aantalLandingen-1] = route[aantalLandingen];
-				aantalLandingen--;
-				updatePassagiers(geefLoc(aantalLandingen-2),geefLoc(aantalLandingen-1));
-			} else {
-				passagiers[geefLoc(aantalLandingen-4)][geefLoc(aantalLandingen-3)] = copyList[geefLoc(aantalLandingen-4)][geefLoc(aantalLandingen-3)];
-				passagiers[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)] = copyList[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)];
-				route[aantalLandingen-3] = route[aantalLandingen-2];
-				route[aantalLandingen-2] = route[aantalLandingen-1];
-				route[aantalLandingen-1] = route[aantalLandingen];
-				aantalLandingen--;
-				updatePassagiers(geefLoc(aantalLandingen-3),geefLoc(aantalLandingen-2));
-			}
-		}
-	}*/
 
 	public boolean wordtIngekort(int mogelijkeExtraDuur) {
 		return geefRouteDuur() + mogelijkeExtraDuur > Dienstregeling.MINUTEN_PER_DAG;
@@ -467,7 +417,6 @@ public class Vliegtuig {
 					break;
 				}
 				else if(nietLeeg(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen)) && afStand()){
-					System.out.println(" ");
 					updatePassagiers(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen));
 					break;
 				}
@@ -481,29 +430,10 @@ public class Vliegtuig {
 
 	// Update de passagiers-lijst na een vlucht
 	private void updatePassagiers(int source, int destination){
-		System.out.println(" ");
 		if(passagiers[source][destination] >= 199){
-			for(int i = 0; i < City.CITIES.size(); i++){
-				System.out.print(" " + passagiers[source][i]);
-			}
-			//System.out.println("Oude waarde: " + passagiers[source][destination] + " - Van: " + City.CITIES.get(source).getName() + " (" + source +") "+ " Naar: " + City.CITIES.get(destination).getName() + " (" + destination +")" );
 			passagiers[source][destination] = passagiers[source][destination] - 199;
-			//System.out.println("Nieuwe waarde: " + passagiers[source][destination]);
-			System.out.println(" ");
-			for(int i = 0; i < City.CITIES.size(); i++){
-				System.out.print(" " + passagiers[source][i]);
-			}
 		} else {
-			for(int i = 0; i < City.CITIES.size(); i++){
-				System.out.print(" " + passagiers[source][i]);
-			}
-			//System.out.println("Oude waarde: " + passagiers[source][destination] + " - Van: " + City.CITIES.get(source).getName() + " (" + source +") "+ " Naar: " + City.CITIES.get(destination).getName() + " (" + destination +")" );
 			passagiers[source][destination] = passagiers[source][destination] = 0;
-			//System.out.println("Nieuwe waarde: " + passagiers[source][destination]);
-			System.out.println(" ");
-			for(int i = 0; i < City.CITIES.size(); i++){
-				System.out.print(" " + passagiers[source][i]);
-			}
 		}
 	}
 

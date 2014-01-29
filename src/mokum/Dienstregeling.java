@@ -75,10 +75,7 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		for(int i = 0; i < City.CITIES.size(); i++){
 			for(int j = 0; j < City.CITIES.size(); j++){
 				actueelPassagiers[i][j] = PASSENGERS[i][j];
-				//System.out.print(actueelPassagiers[i][j] + ",");
 			}
-			System.out.println("},");
-			//System.out.println("Kopieer");
 		}
 	}
 
@@ -147,11 +144,9 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 	//Maakt een volledig random dienstregeling
 	public void maakRandomDienstregeling() {
 		for(int i=0; i<VLOOTGROOTTE;i++) {
-			System.out.println(" Random dienstregeling ");
 			dienstRegeling[i] = new Vliegtuig(actueelPassagiers);
 			dienstRegeling[i].maakRandomRoute(MINUTEN_PER_DAG);
 			actueelPassagiers = dienstRegeling[i].geefPassagiersLijst();
-			System.out.println("Route geadd" + i);
 			for(int k = 0; k < City.CITIES.size(); k++){
 				for(int j = 0; j < City.CITIES.size(); j++){
 					//System.out.print(actueelPassagiers[k][j] + ",");

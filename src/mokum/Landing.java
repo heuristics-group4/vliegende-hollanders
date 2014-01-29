@@ -154,7 +154,7 @@ public class Landing {
 	}
 
 	//Geeft de index van een stad
-	private int geefIndex(String naam) {
+	public int geefIndex(String naam) {
 		for(int i=0; i<City.CITIES.size();i++) {
 			if(naam.equalsIgnoreCase(City.CITIES.get(i).getName())) {
 				return i;
