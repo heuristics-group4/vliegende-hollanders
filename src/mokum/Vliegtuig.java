@@ -353,13 +353,7 @@ public class Vliegtuig {
 	// Voegt een random landing toe op de eerstvolgende lege plek in de route
 	public boolean voegRandomLandingToe() {
 		if (aantalLandingen < route.length) {
-			Landing temp = new Landing();
-			if (aantalLandingen > 0){
-				while(route[aantalLandingen-1].geefAfstandNaar(temp.geefLoc())>3300){
-					temp = new Landing();
-				}
-			}
-			route[aantalLandingen] = temp;
+			route[aantalLandingen] = new Landing();
 			aantalLandingen++;
 			return true;
 		}
