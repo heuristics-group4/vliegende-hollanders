@@ -269,7 +269,7 @@ public class Vliegtuig {
 		
 		for (int i = 0; i<City.CITIES.size(); i++) {
 			//als startpunt niet gekozen punt is
-			if (beginLocatieIndex != i) {
+			if (beginLocatieIndex != i && beginLocatie.geefAfstandNaar(i) <= MAX_BEREIK) {
 				if (isMaximaleDuur) {
 					if (beginLocatie.geefVliegduurNaar(i, VLIEGTUIG_SNELHEID) <= duur){
 						resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
