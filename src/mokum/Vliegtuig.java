@@ -71,7 +71,7 @@ public class Vliegtuig {
 		copyList = new int[City.CITIES.size()][City.CITIES.size()];
 		for(int i = 0; i < City.CITIES.size(); i++){
 			for(int j = 0; j < City.CITIES.size(); j++){
-			//	System.out.print(passagiers[i][j] + ",");
+				//	System.out.print(passagiers[i][j] + ",");
 				copyList[i][j] = passagiers[i][j];
 			}
 			//System.out.println("},");
@@ -231,6 +231,7 @@ public class Vliegtuig {
 		aantalLandingen = 0;
 		route = new Landing[MAX_ROUTE_LENGTE];
 		while (geefRouteDuur() < duur) {
+			System.out.println("\nDuur: " + geefRouteDuur());
 			if (!voegRandomLandingToe()) {
 				break;
 			}
@@ -296,12 +297,33 @@ public class Vliegtuig {
 		System.out.println("Tankbeurt");
 		//System.out.println("\n Duur: " + geefRouteDuur());
 		ingekort();
+		resetTankbeurten();
+		planTankbeurten();
 		System.out.println("Ingekort");
 	}
 	//System.out.println("\n Duur ingekort: " + geefRouteDuur());
 
 
 	public void ingekort(){
+		int random = 0;
+		while(geefRouteDuur() > Dienstregeling.MINUTEN_PER_DAG){
+			while(true){
+				random = RANDOM.nextInt(aantalLandingen-2) + 1;
+				if(City.AFSTAND[random - 1][random + 1] <= 3300){
+					if(route[random].geefLoc() != 0){
+						break;
+					}
+				}
+			}
+			for(int i = random; i < aantalLandingen; i++){
+				route[i] = route[i + 1];
+			}
+			aantalLandingen--;
+			System.out.println("\nIngekorte duur " + geefRouteDuur());
+		}
+	}
+
+	/*public void ingekort(){
 		while(geefRouteDuur() > Dienstregeling.MINUTEN_PER_DAG && aantalLandingen >= 4){
 			if(route[aantalLandingen-2].geefLocatieNaam() != Vliegtuig.geefThuishaven()){
 				passagiers[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)] = copyList[geefLoc(aantalLandingen-3)][geefLoc(aantalLandingen-2)];
@@ -320,7 +342,7 @@ public class Vliegtuig {
 				updatePassagiers(geefLoc(aantalLandingen-3),geefLoc(aantalLandingen-2));
 			}
 		}
-	}
+	}*/
 
 	public boolean wordtIngekort(int mogelijkeExtraDuur) {
 		return geefRouteDuur() + mogelijkeExtraDuur > Dienstregeling.MINUTEN_PER_DAG;
