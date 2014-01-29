@@ -292,14 +292,12 @@ public class Vliegtuig {
 		}
 		updatePassagiers(geefLoc(aantalLandingen-1), geefLoc(aantalLandingen));
 		aantalLandingen++;
-		System.out.println("Eindlocatie");
+		
 		planTankbeurten();
-		System.out.println("Tankbeurt");
+		
 		//System.out.println("\n Duur: " + geefRouteDuur());
 		ingekort();
-		resetTankbeurten();
-		planTankbeurten();
-		System.out.println("Ingekort");
+
 	}
 	//System.out.println("\n Duur ingekort: " + geefRouteDuur());
 
@@ -309,7 +307,7 @@ public class Vliegtuig {
 		while(geefRouteDuur() > Dienstregeling.MINUTEN_PER_DAG){
 			while(true){
 				random = RANDOM.nextInt(aantalLandingen-2) + 1;
-				if(City.AFSTAND[random - 1][random + 1] <= 3300){
+				if(City.AFSTAND[route[random-1].geefLoc()][route[random+1].geefLoc()] <= 3300){
 					if(route[random].geefLoc() != 0){
 						break;
 					}
@@ -319,6 +317,8 @@ public class Vliegtuig {
 				route[i] = route[i + 1];
 			}
 			aantalLandingen--;
+			resetTankbeurten();
+			planTankbeurten();
 			System.out.println("\nIngekorte duur " + geefRouteDuur());
 		}
 	}
