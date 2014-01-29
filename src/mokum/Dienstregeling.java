@@ -47,7 +47,11 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 	
 	
 	public static final	int 			MINUTEN_PER_DAG		= 1200; 	//Het aantal minuten waartussen gevlogen kan worden (20*60)
+<<<<<<< HEAD
 	private static final	int			VLOOTGROOTTE			= 1;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
+=======
+	private static final	int			VLOOTGROOTTE			= 6;		//Het aantal vliegtuigen in de vloot van Mokum Airlines
+>>>>>>> SvS
 	private					Vliegtuig[]	dienstRegeling;					//De verzameling vliegtuigen van Mokum Airlines
 	private Random	RANDOM = new Random(); //Nodig voor het genereren van random getallen
 	
@@ -114,7 +118,18 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 		
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
-		gekozenVlucht.voegPassendeLandingToe();
+		
+		int resterendeTijd = MINUTEN_PER_DAG - gekozenVlucht.geefRouteDuur();
+		int randomBeginpuntInt = RANDOM.nextInt(gekozenVlucht.aantalLandingen-1);
+		Landing randomBeginpunt = gekozenVlucht.route[randomBeginpuntInt];
+		Landing[] mogelijkeBestemmingen = gekozenVlucht.geefMogelijkeBestemmingen(randomBeginpunt, resterendeTijd, true);		
+		if (gekozenVlucht.aantalMogelijkeBestemmingen > 0) {
+			Landing mogelijkeBestemming = mogelijkeBestemmingen[RANDOM.nextInt(gekozenVlucht.aantalMogelijkeBestemmingen)];
+			gekozenVlucht.insertLanding(randomBeginpuntInt+1, mogelijkeBestemming);
+		}
+		
+		
+		
 		gekozenVlucht.resetTankbeurten();
 		//gekozenVlucht.wijzigLanding(gekozenVlucht.geefAantalLandingen(), gekozenVlucht.geefLanding(0).geefLocatie());
 		gekozenVlucht.planTankbeurten();

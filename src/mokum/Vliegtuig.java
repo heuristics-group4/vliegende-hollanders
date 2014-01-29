@@ -34,12 +34,12 @@ public class Vliegtuig {
 												// tank
 	private static final int VLIEGTUIG_SNELHEID = 800; // Maximale snelheid van
 														// het vliegtuig in km/h
-	private int aantalLandingen; // De route die het vliegtuig aflegt: een
+	public int aantalLandingen; // De route die het vliegtuig aflegt: een
 	
-	private int aantalMogelijkeBestemmingen; //Gebaseerd op geefMogelijkeLandingen();
+	public int aantalMogelijkeBestemmingen; //Gebaseerd op geefMogelijkeLandingen();
 									// rijtje landingen
 	private Random	RANDOM = new Random(); //Nodig voor het genereren van random getallen
-	private Landing[] route;
+	public Landing[] route;
 
 	// Constructors
 	public Vliegtuig() {
@@ -247,43 +247,26 @@ public class Vliegtuig {
 		return geefRouteDuur()+mogelijkeExtraDuur > Dienstregeling.MINUTEN_PER_DAG;
 	}
 	
+<<<<<<< HEAD
 	public void voegPassendeLandingToe() {
+=======
+	/*public void voegPassendeLandingToe() {
+>>>>>>> SvS
 		int resterendeTijd = Dienstregeling.MINUTEN_PER_DAG - geefRouteDuur();
 		int randomBeginpuntInt = RANDOM.nextInt(aantalLandingen-1);
 		Landing randomBeginpunt = route[randomBeginpuntInt];
 		Landing[] mogelijkeBestemmingen = geefMogelijkeBestemmingen(randomBeginpunt, resterendeTijd, true);
-		
-		/*System.out.println("resterende tijd: " + resterendeTijd + "\nrandomBeginpuntInt " + randomBeginpuntInt + "\ngeefRouteDuur() " + geefRouteDuur());
-		Landing mogelijkeBestemming;
-		do {
-			mogelijkeBestemming = mogelijkeBestemmingen[RANDOM.nextInt(aantalMogelijkeBestemmingen)];
-		} while (wordtIngekort(randomBeginpunt.geefVliegduurNaar(mogelijkeBestemming.geefLoc(), VLIEGTUIG_SNELHEID)));
-		*/
 		
 		if (aantalMogelijkeBestemmingen > 0) {
 			Landing mogelijkeBestemming = mogelijkeBestemmingen[RANDOM.nextInt(aantalMogelijkeBestemmingen)];
 			insertLanding(randomBeginpuntInt+1, mogelijkeBestemming);
 		}
 		
-		//System.out.println("resterende tijd: " + resterendeTijd + "\nrandomBeginpuntInt " + randomBeginpuntInt + "\ngeefRouteDuur() " + geefRouteDuur() + "\n");
-		/*
-		for(int i=0; i<mogelijkeBestemmingen.length-1 ;i++){
-			System.out.println("resterende tijd: " + resterendeTijd +
-					"\nrandomBeginpuntInt " + randomBeginpuntInt +
-					"\ngeefRouteDuur() " + geefRouteDuur() + 
-					"\nmogelijkeBestemming.loc() " + mogelijkeBestemmingen[i].geefLoc() +
-					"\ngeefVliegduurNaar() " + randomBeginpunt.geefVliegduurNaar(mogelijkeBestemmingen[i].geefLoc(), 800) +
-					"\ni " + i + "\n");
-			if(randomBeginpunt.geefVliegduurNaar(mogelijkeBestemmingen[i].geefLoc(), VLIEGTUIG_SNELHEID) < resterendeTijd){ //check of er plek is om de mogelijkelanding toe te voegen
-				insertLanding(randomBeginpuntInt, mogelijkeBestemmingen[i]);
-				return;
-			}
-		}
-		*/
 	}
+	*/
 	
 	//geef een array van landingen met alle mogelijke bestemmingen vanaf een bepaald beginput. Gegeven een duur. Dit kan een minimale of een maximale duur zijn (boolean minimaleDuur)
-	public Landing[] geefMogelijkeBestemmingen(Landing beginLocatie, int duur, boolean isMinimaleDuur) {
+	public Landing[] geefMogelijkeBestemmingen(Landing beginLocatie, int duur, boolean isMaximaleDuur) {
 		Landing[] resultaat = new Landing[City.CITIES.size()];
 		int beginLocatieIndex = beginLocatie.geefLoc();
 		int aantalElementen = 0;
@@ -291,7 +274,7 @@ public class Vliegtuig {
 		for (int i = 0; i<City.CITIES.size(); i++) {
 			//als startpunt niet gekozen punt is
 			if (beginLocatieIndex != i) {
-				if (isMinimaleDuur) {
+				if (isMaximaleDuur) {
 					if (beginLocatie.geefVliegduurNaar(i, VLIEGTUIG_SNELHEID) <= duur){
 						resultaat[aantalElementen] = new Landing(City.CITIES.get(i));
 						aantalElementen++;
