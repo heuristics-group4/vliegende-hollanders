@@ -237,10 +237,10 @@ public class Vliegtuig {
 			// Deze while loop voegt pas een landing toe op index [random] als de vorige en volgende bestemming binnen het max-bereik t.o.v. Amsterdam liggen.
 			while(true){
 				random = RANDOM.nextInt(aantalLandingen-1);
-				if(nietLeeg(geefLoc(random),geefLoc(random + 1)) && route[random + 1].geefAfstandNaar(0) <= 3300){
+				if(nietLeeg(0 ,geefLoc(random + 1)) && route[random + 1].geefAfstandNaar(0) <= 3300){
 					if(random == 0){
 						break;
-					} else if(nietLeeg(geefLoc(random-1),geefLoc(random)) && (route[random - 1].geefAfstandNaar(0) <= 3300)){
+					} else if(nietLeeg(geefLoc(random-1), 0) && (route[random - 1].geefAfstandNaar(0) <= 3300)){
 						break;
 					}
 				}
@@ -279,15 +279,18 @@ public class Vliegtuig {
 		while(geefRouteDuur() > Dienstregeling.MINUTEN_PER_DAG){
 			while(true){
 				random = RANDOM.nextInt(aantalLandingen-2) + 1;
-				if(City.AFSTAND[route[random-1].geefLoc()][route[random+1].geefLoc()] <= 3300){
+				if(City.AFSTAND[geefLoc(random-1)][geefLoc(random+1)] <= 3300){
 					if(route[random].geefLoc() != 0){
 						break;
 					}
 				}
 			}
+			passagiers[geefLoc(random-1)][geefLoc(random)] = copyList[geefLoc(random-1)][geefLoc(random)];
+			passagiers[geefLoc(random)][geefLoc(random+1)] = copyList[geefLoc(random)][geefLoc(random+1)];
 			for(int i = random; i < aantalLandingen; i++){
 				route[i] = route[i + 1];
 			}
+			updatePassagiers(geefLoc(random-1),geefLoc(random));
 			aantalLandingen--;
 			resetTankbeurten();
 			planTankbeurten();
@@ -402,7 +405,6 @@ public class Vliegtuig {
 			aantalLandingen++;
 			return true;
 		}
-
 		System.out.println("VoegLandingToe: Array is al vol");
 		return false;
 	}
@@ -449,7 +451,7 @@ public class Vliegtuig {
 
 	//Boolean die kijkt of het aantal passagiers van source naar destination groter dan 0 is.
 	private boolean nietLeeg(int source, int destination){
-		return passagiers[source][destination] >= 0;
+		return passagiers[source][destination] > 0;
 	}
 
 	//retourneert de passagierslijst
