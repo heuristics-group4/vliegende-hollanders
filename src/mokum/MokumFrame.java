@@ -165,7 +165,24 @@ public class MokumFrame extends JFrame {
 	public Dienstregeling maakDienstregeling() {
 		//Dienstregeling d = new Dienstregeling(true);
 		//Dienstregeling d = Optimizer.Optimize(10000,1000,2);
-		Dienstregeling d = Optimizer.Optimize2(100,100,0.25,0.01);
+		Dienstregeling d = new Dienstregeling();
+		int resultaatArray[] = new int[10];
+		int min = 9999999;
+		int max = 0;
+		double avg = 0;
+		for(int i=0;i<10;i++){
+			d = Optimizer.Optimize2(1000,100,0.8,0.01);
+			int temp = d.telPassagiersKilometers();
+			avg += temp/10;
+			if(temp>max){
+				max = temp;
+			}
+			if(temp<min){
+				min = temp;
+			}
+			resultaatArray[i] = temp;			
+		}
+		System.out.println("min: "+min+" max: "+max+" avg: "+avg);
 		return d;
 	}
 
