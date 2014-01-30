@@ -98,35 +98,46 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 	}
 
 	public void wijzigRandomLandingVanRandomVliegtuig(){
-		// Kies random vlucht
-		int random_vlucht = RANDOM.nextInt(VLOOTGROOTTE);
+		int random_vlucht;
 		int random_landing;
-		Vliegtuig gekozenVlucht = dienstRegeling[random_vlucht];
+		int nieuweStadLoc;
+		City nieuweStad;
+		Vliegtuig gekozenVlucht;
 		Landing gekozenLanding;
-		// Kies randomlanding
-		do {
+		/*do {
 			random_landing = RANDOM.nextInt(dienstRegeling[random_vlucht].geefAantalLandingen()-1);
 			gekozenLanding = dienstRegeling[random_vlucht].geefLanding(random_landing);
 		}
-		// Niet de thuishaven veranderen en minimaal een keer erlangs
 		while (gekozenLanding.geefLocatieNaam().equals(Vliegtuig.geefThuishaven()) &&
 				gekozenVlucht.aantalKeerThuishavenInRoute() == 1);
-
+		*/
+		
+		while(true){
+			random_vlucht = RANDOM.nextInt(VLOOTGROOTTE);
+			random_landing = RANDOM.nextInt(dienstRegeling[random_vlucht].geefAantalLandingen()-2)+1;
+			nieuweStadLoc = RANDOM.nextInt(City.CITIES.size());
+			gekozenVlucht = dienstRegeling[random_vlucht];
+			gekozenLanding = gekozenVlucht.geefLanding(random_landing);
+			nieuweStad = City.CITIES.get(nieuweStadLoc);
+			if(gekozenVlucht.geefLanding(random_landing-1).geefAfstandNaar(nieuweStadLoc)<3300){
+				if(gekozenVlucht.geefLanding(random_landing+1).geefAfstandNaar(nieuweStadLoc)<3300){
+					if(!gekozenLanding.geefLocatieNaam().equals(Vliegtuig.geefThuishaven())){
+						break;
+					}
+					else if(gekozenVlucht.aantalKeerThuishavenInRoute()>1){
+						break;						
+					}
+				}
+			}
+		}
+		
 		gekozenVlucht.resetTankbeurten();
-
-		/*Als random landing geen Thuishaven is
-		if (gekozenLanding.geefLocatieNaam().equals(Vliegtuig.geefThuishaven()) &&
-			gekozenVlucht.aantalKeerThuishavenInRoute() == 1) {
-
-		}*/
-
-
-		//
-		gekozenVlucht.wijzigLanding(random_landing, actueelPassagiers);
-
+				
+		gekozenVlucht.wijzigLanding(random_landing,nieuweStad);
+		
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
-
+		
 		int resterendeTijd = MINUTEN_PER_DAG - gekozenVlucht.geefRouteDuur();
 		int randomBeginpuntInt = RANDOM.nextInt(gekozenVlucht.aantalLandingen-1);
 		Landing randomBeginpunt = gekozenVlucht.route[randomBeginpuntInt];
@@ -135,10 +146,14 @@ public class Dienstregeling implements Comparable<Dienstregeling>{
 			Landing mogelijkeBestemming = mogelijkeBestemmingen[RANDOM.nextInt(gekozenVlucht.aantalMogelijkeBestemmingen)];
 			gekozenVlucht.insertLanding(randomBeginpuntInt+1, mogelijkeBestemming);
 		}
+		
+		
+		
 		gekozenVlucht.resetTankbeurten();
 		//gekozenVlucht.wijzigLanding(gekozenVlucht.geefAantalLandingen(), gekozenVlucht.geefLanding(0).geefLocatie());
 		gekozenVlucht.planTankbeurten();
 		gekozenVlucht.ingekort();
+		
 	}
 
 	//Maakt een volledig random dienstregeling
