@@ -340,6 +340,21 @@ public class Vliegtuig {
 		//zou kunnen dat dit een conflict veroorzaakt met de tankbeurten.
 	}
 
+	public boolean wijzigLanding(int index, City nieuweLoc) {
+		// <= : een wijziging mag de eerstvolgende lege index zijn of een
+		// bestaande index. Maar nooit groter dan de lengte van de route
+		if (index <= aantalLandingen && index < route.length) {
+			route[index].wijzigLocatie(nieuweLoc);
+			return true;
+		}
+
+		System.out
+				.println("WijzigLanding: meegegeven index " + index
+						+ "is te groot. (" + aantalLandingen + "/"
+						+ route.length + ")");
+		return false;
+	}
+	
 	// WijzigLanding bestaat uit meerdere methoden die eigenschappen van een
 	// landing veranderen
 	// Bijvoorbeeld grondtijd, locatie of tanken
