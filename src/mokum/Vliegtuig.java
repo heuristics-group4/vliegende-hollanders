@@ -337,6 +337,7 @@ public class Vliegtuig {
 		}
 		aantalMogelijkeBestemmingen = aantalElementen;
 		return resultaat;
+	}
 		
 
 	public boolean wijzigLanding(int index, City nieuweLoc) {
